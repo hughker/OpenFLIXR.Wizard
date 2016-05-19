@@ -35,13 +35,26 @@ $(document).ready(function() {
 
         },
         onNext: function(tab, navigation, index) {
-            if (index == 1) {
-                return validateFirstStep();
-            } else if (index == 2) {
-                return validateSecondStep();
-            } else if (index == 3) {
-                return validateThirdStep();
-            } //etc.
+             if (index == 1) {
+                 return validateFirstStep();
+             } else if (index == 2) {
+                 return validateSecondStep();
+             } else if (index == 3) {
+                 return validateThirdStep();
+             }  else if (index == 4) {
+                 return validateFourthStep();
+             }  else if (index == 5) {
+                 return validateFifthStep();
+             }  else if (index == 6) {
+                 return validateSixthStep();
+             }  else if (index == 7) {
+                 return validateSeventhStep();
+             }  else if (index == 8) {
+                 return validateEightStep();
+             }  else if (index == 9) {
+                 return validateNinthStep();
+             }
+             //etc.
 
         },
         onTabClick: function(tab, navigation, index) {
@@ -132,14 +145,7 @@ function validateFirstStep() {
 function validateSecondStep() {
 
     //code here for second step
-    $(".wizard-card form").validate({
-        rules: {
-
-        },
-        messages: {
-
-        }
-    });
+    $(".wizard-card form").validate({});
 
     if (!$(".wizard-card form").valid()) {
         console.log('invalid');
@@ -148,12 +154,87 @@ function validateSecondStep() {
     return true;
 
 }
-
 function validateThirdStep() {
     //code here for third step
+    $(".wizard-card form").validate({});
 
-
+    if (!$(".wizard-card form").valid()) {
+        //form is invalid
+        return false;
+    }
+    return true;
 }
+
+function validateFourthStep() {
+    //code here for third step
+    $(".wizard-card form").validate({});
+    if (!$(".wizard-card form").valid()) {
+        //form is invalid
+        return false;
+    }
+
+    return true;
+}
+
+function validateFifthStep() {
+    //code here for third step
+    $(".wizard-card form").validate({});
+
+    if (!$(".wizard-card form").valid()) {
+        //form is invalid
+        return false;
+    }
+
+    return true;
+}
+function validateSixthStep() {
+    //code here for third step
+    $(".wizard-card form").validate({});
+
+    if (!$(".wizard-card form").valid()) {
+        //form is invalid
+        return false;
+    }
+
+    return true;
+}
+
+function validateSeventhStep() {
+    //code here for third step
+    $(".wizard-card form").validate({});
+
+    if (!$(".wizard-card form").valid()) {
+        //form is invalid
+        return false;
+    }
+
+    return true;
+}
+
+function validateEighthStep() {
+    //code here for third step
+    $(".wizard-card form").validate({});
+
+    if (!$(".wizard-card form").valid()) {
+        //form is invalid
+        return false;
+    }
+
+    return true;
+}
+
+function validateNinthStep() {
+    //code here for third step
+    $(".wizard-card form").validate({});
+
+    if (!$(".wizard-card form").valid()) {
+        //form is invalid
+        return false;
+    }
+
+    return true;
+}
+
 
 //Function to show image before upload
 

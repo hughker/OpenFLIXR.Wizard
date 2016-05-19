@@ -142,7 +142,7 @@
                                                 <div class="col-sm-10 col-sm-offset-1">
                                                     <div class="col-sm-4 col-sm-offset-2">
                                                         <div class="choice active" data-toggle="wizard-radio" rel="tooltip" title="Automatic IP assigment. Choose DHCP if you're not sure what to choose">
-                                                            <input type="checkbox" name="dhcp" value="dhcp.on" id="dhcp.on" checked>
+                                                            <input type="radio" name="network" value="dhcp" checked>
                                                             <div class="icon" onclick="$('#collapseExample').hide();">
                                                                 <i class="fa fa-magic"></i>
                                                             </div>
@@ -151,7 +151,7 @@
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="choice" data-toggle="wizard-radio" rel="tooltip" title="Static IP assignment. Only choose when you know what you're doing">
-                                                            <input type="checkbox" name="static" value="static.on" id="static.on">
+                                                            <input type="radio" name="network" value="static">
                                                             <div class="icon" onclick="$('#collapseExample').show();">
                                                                 <i class="fa fa-wrench"></i>
                                                             </div>
@@ -208,7 +208,7 @@
                                                 <div class="col-sm-10 col-sm-offset-1">
                                                     <div class="col-sm-4 col-sm-offset-2">
                                                         <div class="choice active" data-toggle="wizard-radio" rel="tooltip" title="Select this option if you want OpenFLIXR to be available only from your local network">
-                                                            <input type="checkbox" name="local" value="local.on" id="local.on" checked>
+                                                            <input type="radio" name="letsencrypt" value="off" checked>
                                                             <div class="icon" onclick="$('#remote').hide();">
                                                                 <i class="fa fa-home"></i>
                                                             </div>
@@ -218,7 +218,7 @@
 
                                                     <div class="col-sm-4">
                                                         <div class="choice" data-toggle="wizard-radio" rel="tooltip" title="Select this option if you want OpenFLIXR to be available from your local network and the Internet">
-                                                            <input type="checkbox" name="remote" value="remote.on" id="remote.on">
+                                                            <input type="radio" name="letsencrypt" value="on">
                                                             <div class="icon" onclick="$('#remote').show();">
                                                                 <i class="fa fa-cloud"></i>
                                                             </div>
