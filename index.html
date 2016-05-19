@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="OpenFLIXR Setup">
+    <meta name="author" content="OpenFLIXR">
+    <title>OpenFLIXR Setup</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/stylish-portfolio.css" rel="stylesheet">
+    <link href="css/gsdk-base.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+    <div class="image-container set-full-height" style="background-color: #4C4C4C">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="wizard-container">
+                        <div class="card wizard-card ct-wizard-azzure" id="wizard">
+                            <form action="settings.php" method="POST" id="registration-form">
+                                <div class="wizard-header">
+                                    <h3>OpenFLIXR <b>Setup</b><br><br></h3>
+                                </div>
+                                <ul>
+                                    <li><a href="#setup" data-toggle="tab">Info</a></li>
+                                    <li><a href="#login" data-toggle="tab">Password</a></li>
+                                    <li><a href="#network" data-toggle="tab">Network</a></li>
+                                    <li><a href="#ssl" data-toggle="tab">Access</a></li>
+                                    <li><a href="#usenet" data-toggle="tab">Usenet</a></li>
+                                    <li><a href="#newznab" data-toggle="tab">Newznab</a></li>
+                                    <li><a href="#modules" data-toggle="tab">Modules</a></li>
+                                    <li><a href="#extra" data-toggle="tab">Extras</a></li>
+                                    <li><a href="#finish" data-toggle="tab">Plex</a></li>
+                                </ul>
+
+                                <div class="tab-content">
+                                    <div class="tab-pane" id="setup" name="messagebox">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <h4 class="info-text">Welcome to your OpenFLIXR</h4>
+                                            </div>
+
+                                            <div class="col-sm-10 col-sm-offset-1">
+                                                <p><span style="color: #808080;">Finishing this setup will automatically create random API keys and install Plex Media Server.</span></p>
+                                                <p><span style="color: #808080;">Before you can use OpenFLIXR, you need to mount ‘downloads’ (subdirectories will be created at boot time when mounted to a network share), ‘movies’, ‘series’, ’music’ and ‘comics’ folders from a location with enough free disk space like a NAS, external harddrive, etc.</span></p>
+                                                <p><span style="color: #808080;">To make things&nbsp;easier you can use <a href="/webmin/mount/" target="_blank" rel="tooltip" title="Default username and password: openflixr">Webmin<sup> <i class="fa fa-external-link" aria-hidden="true" style="font-size:0.8em"></i></sup></a> to accomplish this. OpenFLIXR is case sensitive.</span></p>
+                                                <p><span style="color: #ff52bd;font-weight: bold;">To be able to use OpenFLIXR with default settings, you must use the following directory structure!</span></p>
+                                                <center>
+                                                    <p><span style="color: #808080;">If you need help, use the <a href="http://www.openflixr.com/forum" target="_blank">forums</a>.</span></p>
+                                                </center><br>
+                                                <div style="padding-left: 0px;" class="col-md-4 tooltip-wide">
+                                                    <div onclick="$('#downloads').toggle();">
+                                                        <p style="margin:0;" rel="tooltip" data-placement="right" title="Main downloads folder"><span style="color: #808080;">
+                                                <a style="text-decoration: none;cursor: pointer;"><i id="fac_573361a7db016" class="fa fa-folder-o"></i>
+                                                /mnt/<b>downloads/...</b></a></span></p>
+                                                    </div>
+                                                    <div class="collapse" id="downloads">
+                                                        <p style="margin:0;" rel="tooltip" data-placement="right" title="SABnzbd automatically picks up .nzb files placed here (also used for packages)"><span style="color: #808080;">
+                                                &nbsp; &nbsp; &nbsp;
+                                                <i id="fac_573361a7dc060" class="fa fa-folder-open-o"></i>
+                                                blackholenzb
+                                              </span></p>
+                                                        <p style="margin:0;" rel="tooltip" data-placement="right" title="NZBget automatically picks up .nzb files placed here"><span style="color: #808080;">&nbsp; &nbsp; &nbsp;
+                                                <i id="fac_573361a7dd1b7" class="fa fa-folder-open-o"></i>
+                                                blackholenzbget
+                                                </span></p>
+                                                        <p style="margin:0;" rel="tooltip" data-placement="right" title="Completed misc. downloads are placed here"><span style="color: #808080;">&nbsp; &nbsp; &nbsp;
+                                                <i id="fac_573361a7de197" class="fa fa-folder-open-o"></i>
+                                                complete
+                                                </span></p>
+                                                        <p style="margin:0;" rel="tooltip" data-placement="right" title="Incompleted downloads"><span style="color: #808080;">&nbsp; &nbsp; &nbsp;
+                                                <i id="fac_573361a7df24b" class="fa fa-folder-open-o"></i>
+                                                incomplete
+                                                </span></p>
+                                                        <p style="margin:0;" rel="tooltip" data-placement="right" title="Completed but not processed Music"><span style="color: #808080;">&nbsp; &nbsp; &nbsp;
+                                                <i id="fac_573361a7e02c9" class="fa fa-folder-open-o"></i>
+                                                music
+                                                </span></p>
+                                                        <p style="margin:0;" rel="tooltip" data-placement="right" title="Completed and processed (by Headphones) Music are placed here"><span style="color: #808080;">&nbsp; &nbsp; &nbsp;
+                                                <i id="fac_573361a7e12ec" class="fa fa-folder-open-o"></i>
+                                                musicready
+                                                </span></p>
+                                                        <p style="margin:0;" rel="tooltip" data-placement="right" title="Temp folder"><span style="color: #808080;">&nbsp; &nbsp; &nbsp;
+                                                <i id="fac_573361a7e2346" class="fa fa-folder-open-o"></i>
+                                                temp
+                                                </span></p>
+                                                        <p style="margin:0;" rel="tooltip" data-placement="right" title="Unfinished Comics"><span style="color: #808080;">&nbsp; &nbsp; &nbsp;
+                                                <i id="fac_573361a7e396d" class="fa fa-folder-open-o"></i>
+                                                tempcomics
+                                                </span></p>
+                                                        <p style="margin:0;" rel="tooltip" data-placement="right" title="Unfinished TV Shows"><span style="color: #808080;">&nbsp; &nbsp; &nbsp;
+                                                <i id="fac_573361a7e498d" class="fa fa-folder-open-o"></i>
+                                                tempseries
+                                                </span></p>
+                                                        <p style="margin:0;" rel="tooltip" data-placement="right" title="Completed Torrents are placed here"><span style="color: #808080;">&nbsp; &nbsp; &nbsp;
+                                                <i id="fac_573361a7e59f6" class="fa fa-folder-open-o"></i>
+                                                torrentcomplete
+                                                </span></p>
+                                                        <p style="margin:0;" rel="tooltip" data-placement="right" title="qBittorrent automatically picks up .torrent files placed here (also used for packages)"><span style="color: #808080;">&nbsp; &nbsp; &nbsp;
+                                                <i id="fac_573361a7e69f9" class="fa fa-folder-open-o"></i>
+                                                torrentwatch</span></p>
+
+                                                    </div>
+
+                                                    <p style="margin:0;" rel="tooltip" data-placement="right" title="Completed Movies are placed here"><span style="color: #808080;">
+<i id="fac_573361a7e7930" class="fa fa-folder-o"></i>
+/mnt/<b>movies</b>
+</span></p>
+                                                    <p style="margin:0;" rel="tooltip" data-placement="right" title="Completed TV Shows are placed here"><span style="color: #808080;">
+<i id="fac_573361a7e897b" class="fa fa-folder-o"></i>
+/mnt/<b>series</b>
+</span></p>
+                                                    <p style="margin:0;" rel="tooltip" data-placement="right" title="This folder can be used for Plex and Headphones to scan for music. Not mandatory"><span style="color: #808080;">
+<i id="fac_573361a7e9984" class="fa fa-folder-o"></i>
+/mnt/<b>music</b>
+</span></p>
+                                                    <p style="margin:0;" rel="tooltip" data-placement="right" title="Completed Comics are placed here"><span style="color: #808080;">
+<i id="fac_573361a7ead86" class="fa fa-folder-o"></i>
+/mnt/<b>comics</b></span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="network">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <h4 class="info-text">Choose network configuration</h4>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-10 col-sm-offset-1">
+                                                    <div class="col-sm-4 col-sm-offset-2">
+                                                        <div class="choice active" data-toggle="wizard-radio" rel="tooltip" title="Automatic IP assigment. Choose DHCP if you're not sure what to choose">
+                                                            <input type="checkbox" name="dhcp" value="dhcp.on" id="dhcp.on" checked>
+                                                            <div class="icon" onclick="$('#collapseExample').hide();">
+                                                                <i class="fa fa-magic"></i>
+                                                            </div>
+                                                            <label for="dhcp">DHCP</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="choice" data-toggle="wizard-radio" rel="tooltip" title="Static IP assignment. Only choose when you know what you're doing">
+                                                            <input type="checkbox" name="static" value="static.on" id="static.on">
+                                                            <div class="icon" onclick="$('#collapseExample').show();">
+                                                                <i class="fa fa-wrench"></i>
+                                                            </div>
+                                                            <label for="static">STATIC</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="collapse" id="collapseExample">
+                                                <div class="col-sm-5 col-sm-offset-1">
+                                                    <br>
+                                                    <label>IP Address</label>
+                                                    <div class="input-group">
+                                                        <span style="color:#808080" class="input-group-addon"><i class="fa fa-sitemap" aria-hidden="true"></i></span>
+                                                        <input type="text" class="form-control" id="ip" name="ip" placeholder="E.g. 10.200.10.50" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <br>
+                                                    <label>Subnet Mask</label>
+                                                    <div class="input-group">
+                                                        <span style="color:#808080" class="input-group-addon"><i class="fa fa-sitemap" aria-hidden="true"></i></span>
+                                                        <input name="subnet" type="text" class="form-control" id="subnet" placeholder="E.g. 255.255.255.0" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-5 col-sm-offset-1">
+                                                    <br>
+                                                    <label>Gateway</label>
+                                                    <div class="input-group">
+                                                        <span style="color:#808080" class="input-group-addon"><i class="fa fa-sitemap" aria-hidden="true"></i></span>
+                                                        <input name="gateway" type="text" class="form-control" id="gateway" placeholder="E.g. 10.200.10.1" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <br>
+                                                    <label>DNS Server</label>
+                                                    <div class="input-group" rel="tooltip" title="Google DNS: 8.8.8.8">
+                                                        <span style="color:#808080" class="input-group-addon"><i class="fa fa-sitemap" aria-hidden="true"></i></span>
+                                                        <input name="dns" type="text" class="form-control" id="dns" placeholder="E.g. 8.8.8.8" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                    </div>
+
+                                    <div class="tab-pane" id="ssl">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <h4 class="info-text">How do you want to access OpenFLIXR</h4>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-10 col-sm-offset-1">
+                                                    <div class="col-sm-4 col-sm-offset-2">
+                                                        <div class="choice active" data-toggle="wizard-radio" rel="tooltip" title="Select this option if you want OpenFLIXR to be available only from your local network">
+                                                            <input type="checkbox" name="local" value="local.on" id="local.on" checked>
+                                                            <div class="icon" onclick="$('#remote').hide();">
+                                                                <i class="fa fa-home"></i>
+                                                            </div>
+                                                            <label for="local">LOCAL</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-4">
+                                                        <div class="choice" data-toggle="wizard-radio" rel="tooltip" title="Select this option if you want OpenFLIXR to be available from your local network and the Internet">
+                                                            <input type="checkbox" name="remote" value="remote.on" id="remote.on">
+                                                            <div class="icon" onclick="$('#remote').show();">
+                                                                <i class="fa fa-cloud"></i>
+                                                            </div>
+                                                            <label for="remote">REMOTE</label>
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+
+                                            <div class="collapse" id="remote">
+
+
+                                                <div class="col-sm-7 col-sm-offset-3">
+                                                    <div class="form-group">
+                                                        <br>
+                                                        <p><span style="color: #808080;">Free secure remote access with </span><a href="https://letsencrypt.org" target="_blank">Let’s Encrypt</a>&nbsp;<span style="color: #808080;">is enabled as soon as you've met all conditions below. Certificates are auto-renewed.<br></p>
+
+                                     <p><span style="color: #808080;"><style>
+                                     #fac_57324bf4abf31 {
+                                     color: #808080;            }
+                                     #fac_57324bf4abf31:hover {
+                                     }
+                                     </style>
+                                     <i id="fac_57324bf4abf31" class="fa fa-check-square-o"></i>
+                                     Register domain name</span>
+                                                            <br>
+                                                            <span style="color: #808080;"><style>
+                                     #fac_57324bf4aca8a {
+                                     color: #808080;            }
+                                     #fac_57324bf4aca8a:hover {
+                                     }
+                                     </style>
+                                     <i id="fac_57324bf4aca8a" class="fa fa-check-square-o"></i>
+                                     Edit / add&nbsp;<a href="https://support.google.com/a/answer/2576578" target="_blank">A record(s)</a> and point them to your public IP address</span>
+                                                            <br>
+                                                            <span style="color: #808080;"><style>
+                                     #fac_57324bf4ad906 {
+                                     color: #808080;            }
+                                     #fac_57324bf4ad906:hover {
+                                     }
+                                     </style>
+                                     <i id="fac_57324bf4ad906" class="fa fa-check-square-o"></i>
+                                     Forward port <b>443</b> (only!) on your router to local IP of OpenFLIXR</span>
+                                                            <br>
+                                                            <span style="color: #808080;"><style>
+                                     #fac_57324bf4aee2a {
+                                     color: #808080;            }
+                                     #fac_57324bf4aee2a:hover {
+                                     }
+                                     </style>
+                                     <i id="fac_57324bf4aee2a" class="fa fa-check-square-o"></i>
+                                     Enter domainname and e-mail address below</span></p>
+                                                        <div>
+                                                            <label>Domain (required to obtain certificate)</label>
+                                                            <div class="input-group">
+                                                                <span style="color:#808080" class="input-group-addon">www.</i></span>
+                                                                <input name="domainname" type="text" class="form-control" id="domainname" placeholder="example.com" required rel="tooltip" title="Let's Encrypt certificate will contain both base domain and with www.">
+                                                            </div>
+                                                        </div>
+                                                        <br>
+                                                        <div>
+                                                            <label>E-mail address (required for lost key recovery)</label>
+                                                            <div class="input-group">
+                                                                <span style="color:#808080" class="input-group-addon">&nbsp&nbsp&nbsp<i class="fa fa-envelope-o" aria-hidden="true">&nbsp&nbsp&nbsp</i></span>
+                                                                <input name="email" type="email" class="form-control" id="email" placeholder="somebody@example.com" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-pane" id="usenet">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <h4 class="info-text">Usenet provider</h4>
+                                            </div>
+
+                                            <div class="col-sm-5 col-sm-offset-1">
+                                                <label>Description</label>
+                                                <div class="input-group">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                                    <input name="usenetdescription" type="text" class="form-control" id="usenetdescription" placeholder="Super Usenet">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-5">
+                                                <label>Servername</label>
+                                                <div class="input-group">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-server" aria-hidden="true"></i></span>
+                                                    <input name="usenetservername" type="text" class="form-control" id="usenetservername" placeholder="news.example.com">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-5 col-sm-offset-1">
+                                                <br>
+                                                <label>Username</label>
+                                                <div class="input-group">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+                                                    <input name="usenetusername" type="text" class="form-control" id="usenetusername" placeholder="username">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-5">
+                                                <br>
+                                                <label>Password</label>
+                                                <div class="input-group">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-lock" aria-hidden="true"></i></span>
+                                                    <input name="usenetpassword" type="password" class="form-control" id="usenetpassword" placeholder="password">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-5 col-sm-offset-1">
+                                                <br>
+                                                <label>Port</label>
+                                                <div class="input-group">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-circle-o" aria-hidden="true"></i></span>
+                                                    <input name="usenetport" type="number" class="form-control" id="usenetport" value="119">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-5">
+                                                <br>
+                                                <label>Number of threads</label>
+                                                <div class="input-group">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-wrench" aria-hidden="true"></i></span>
+                                                    <input name="usenetthreads" type="number" class="form-control" id="usenetthreads" value="4">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-5 col-sm-offset-1">
+                                                <br>
+                                                <label>SSL</label>
+                                                <div class="input-group col-xs-4">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-user-secret" aria-hidden="true"></i></span>
+                                                    <select name="usenetssl" id="usenetssl" class="form-control">
+                                                        <option value="no" selected>No</option>
+                                                        <option value="yes">Yes</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <br>
+                                    </div>
+                                    <div class="tab-pane" id="newznab">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <h4 class="info-text">Newznab provider</h4>
+                                            </div>
+
+                                            <div class="col-sm-5 col-sm-offset-1">
+                                                <label>Description</label>
+                                                <div class="input-group">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                                    <input name="newznabprovider" type="text" class="form-control" id="newznabprovider" placeholder="NZB Planet">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-5">
+                                                <label>Newznab URL</label>
+                                                <div class="input-group">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-link" aria-hidden="true"></i></span>
+                                                    <input name="newznaburl" type="url" class="form-control" id="newznaburl" placeholder="http://nzb.example.com">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-5 col-sm-offset-1">
+                                                <br>
+                                                <label>Newznab API</label>
+                                                <div class="input-group">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-key" aria-hidden="true"></i></span>
+                                                    <input name="newznabapi" type="text" class="form-control" id="newznabapi" placeholder="apikey">
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-pane" id="modules">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <h4 class="info-text">Select modules</h4>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <br>
+                                                <label class="col-md-offset-2">TV Shows Downloader</label>
+                                                <div class="input-group col-md-8 col-md-offset-2">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-television" aria-hidden="true"></i></span>
+                                                    <select name="tvshowdl" id="tvshowdl" class="form-control">
+                                                        <option value="sickrage" selected>SickRage</option>
+                                                        <option value="sonarr">Sonarr</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <br>
+                                                <label class="col-md-offset-2">NZB Downloader</label>
+                                                <div class="input-group col-md-8 col-md-offset-2">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-download" aria-hidden="true"></i></span>
+                                                    <select name="nzbdl" id="nzbdl" class="form-control">
+                                                        <option value="sabnzbd" selected>SABnzbd</option>
+                                                        <option value="nzbget">NZBget</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <br>
+                                                <label class="col-md-offset-2">Mopidy/Mopify</label>
+                                                <div class="input-group col-md-8 col-md-offset-2">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-music" aria-hidden="true"></i></span>
+                                                    <select name="mopidy" id="mopidy" class="form-control">
+                                                        <option value="enabled" selected>Enabled</option>
+                                                        <option value="disabled">Disabled</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <br>
+                                                <label class="col-md-offset-2">Syncthing</label>
+                                                <div class="input-group col-md-8 col-md-offset-2">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-refresh" aria-hidden="true"></i></span>
+                                                    <select name="syncthing" id="syncthing" class="form-control">
+                                                        <option value="enabled" selected>Enabled</option>
+                                                        <option value="disabled">Disabled</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <br>
+                                                <label class="col-md-offset-2">Home-Assistant</label>
+                                                <div class="input-group col-md-8 col-md-offset-2">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-home" aria-hidden="true"></i></span>
+                                                    <select name="hass" id="hass" class="form-control">
+                                                        <option value="enabled" selected>Enabled</option>
+                                                        <option value="disabled">Disabled</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <br>
+                                                <label class="col-md-offset-2">ntopNG (Network Monitor)</label>
+                                                <div class="input-group col-md-8 col-md-offset-2">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-sitemap" aria-hidden="true"></i></span>
+                                                    <select name="ntopng" id="ntopng" class="form-control">
+                                                        <option value="enabled" selected>Enabled</option>
+                                                        <option value="disabled">Disabled</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-pane" id="login">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <h4 class="info-text">Set new global password</h4>
+                                            </div>
+
+                                            <div class="col-sm-4 col-sm-offset-4">
+                                                <div class="form-group">
+                                                    <br>
+                                                    <label>Password</label>
+                                                    <div class="input-group">
+                                                        <span style="color:#808080" class="input-group-addon"><i class="fa fa-lock" aria-hidden="true"></i></span>
+                                                        <input name="password" type="password" class="form-control" id="password" placeholder="password" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <br>
+                                                        <label>Confirm</label>
+                                                        <div class="input-group">
+                                                            <span style="color:#808080" class="input-group-addon"><i class="fa fa-lock" aria-hidden="true"></i></span>
+                                                            <input name="confirm_password" type="password" class="form-control" id="confirm_password" placeholder="password" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-pane" id="extra">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <h4 class="info-text">Optional settings</h4>
+                                            </div>
+
+                                            <div class="col-sm-5 col-sm-offset-1" rel="tooltip" title="Headphones VIP account is used in Headphones to find better Music results">
+                                                <label><a href="https://headphones.codeshy.com/vip/" target="_blank">Headphones VIP username</label></a>
+                                                    <div class="input-group">
+                                                        <span style="color:#808080" class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+                                                        <input name="headphonesuser" type="text" class="form-control" id="headphonesuser" placeholder="username">
+                                                    </div>
+                                            </div>
+
+                                            <div class="col-sm-5">
+                                                <label>Headphones VIP password</label>
+                                                <div class="input-group">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-lock" aria-hidden="true"></i></span>
+                                                    <input name="headphonespass" type="password" class="form-control" id="headphonespass" placeholder="password">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-5 col-sm-offset-1" rel="tooltip" title="AniDB account is used in SickRage to find better Anime results">
+                                                <br>
+                                                <label><a href="http://anidb.net" target="_blank">AniDB username</label></a>
+                                                    <div class="input-group">
+                                                        <span style="color:#808080" class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+                                                        <input name="anidbuser" type="text" class="form-control" id="anidbuser" placeholder="username">
+                                                    </div>
+                                            </div>
+
+                                            <div class="col-sm-5">
+                                                <br>
+                                                <label>AniDB password</label>
+                                                <div class="input-group">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-lock" aria-hidden="true"></i></span>
+                                                    <input name="anidbpass" type="password" class="form-control" id="anidbpass" placeholder="password">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-5 col-sm-offset-1" rel="tooltip" title="Spotify account is needed in mopidy/mopify">
+                                                <br>
+                                                <label><a href="http://www.spotify.com" target="_blank">Spotify username</label></a>
+                                                    <div class="input-group">
+                                                        <span style="color:#808080" class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+                                                        <input name="spotuser" type="text" class="form-control" id="spotuser" placeholder="username">
+                                                    </div>
+                                            </div>
+
+                                            <div class="col-sm-5">
+                                                <br>
+                                                <label>Spotify password</label>
+                                                <div class="input-group">
+                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-lock" aria-hidden="true"></i></span>
+                                                    <input name="spotpass" type="password" class="form-control" id="spotpass" placeholder="password">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-5 col-sm-offset-1" rel="tooltip" title="IMDB public watchlist URL is used in CouchPotato to automatically download movies added to your watchlist">
+                                                <br>
+                                                <label><a href="http://www.imdb.com" target="_blank">IMDB public watchlist URL</label></a>
+                                                    <div class="input-group">
+                                                        <span style="color:#808080" class="input-group-addon"><i class="fa fa-link" aria-hidden="true"></i></span>
+                                                        <input name="imdb" type="url" class="form-control" id="imdb" placeholder="http://rss.imdb.com/user/ur12345678/watchlist">
+                                                    </div>
+                                            </div>
+
+                                            <div class="col-sm-5" rel="tooltip" title="Comic Vine API key is used in Mylar to find better Comic results">
+                                                <br>
+                                                <label><a href="http://comicvine.gamespot.com" target="_blank">Comic Vine API key</label></a>
+                                                    <div class="input-group">
+                                                        <span style="color:#808080" class="input-group-addon"><i class="fa fa-key" aria-hidden="true"></i></span>
+                                                        <input name="comicvine" type="text" class="form-control" id="plex" placeholder="apikey">
+                                                    </div>
+                                            </div>
+
+                                        </div>
+                                        <br>
+                                    </div>
+
+
+
+                                    <div class="tab-pane" id="finish" name="messagebox">
+                                        <h4 class="info-text">Plex integration</h4>
+                                        <div class="row">
+                                            <div class="col-sm-10 col-sm-offset-1">
+                                                <p><span style="color: #808080;">Tight integration with <a href="https://plex.tv" target="_blank">Plex</a> makes OpenFLIXR even more powerful. For optimum performance, you should configure the following applications with your Plex account. Click buttons to go directly to those settings.</span></p>
+                                                <br>
+                                                <center>
+                                                    <a style="width: 35%;" href="/couchpotato/settings/notifications/" target="_blank" class="btn btn-block btn-sm btn-info btn-fill">CouchPotato</a>
+                                                    <a style="width: 35%;" href="/sickrage/config/notifications/" target="_blank" class="btn btn-block btn-sm btn-info btn-fill">SickRage</a>
+                                                    <a style="width: 35%;" href="/plexpy" target="_blank" class="btn btn-block btn-sm btn-info btn-fill">PlexPy</a>
+                                                    <a style="width: 35%;" href="/request/admin/authentication" target="_blank" class="btn btn-block btn-sm btn-info btn-fill">PlexRequests</a>
+                                                    <a style="width: 35%;" href="/htpc/settings/#plex" target="_blank" class="btn btn-block btn-sm btn-info btn-fill">HTPC Manager</a></center>
+                                                <br>
+                                                <br>
+                                                <h4 style="margin: 0;" class="info-text">If you're sure all settings are correct, click <b>finish</b> to continue</h4>
+                                                <h4 class="info-text">Setup will take a while, system will reboot when done</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                                <div class="wizard-footer">
+                                    <div class="pull-right">
+                                        <input type='button' class='btn btn-next btn-fill btn-success btn-wd btn-sm' name='next' value='Next' />
+                                        <input type='submit' class='btn btn-finish btn-fill btn-success btn-wd btn-sm' name='finish' value='Finish' />
+
+                                    </div>
+                                    <div class="pull-left">
+                                        <input type='button' class='btn btn-previous btn-fill btn-default btn-wd btn-sm' name='previous' value='Previous' />
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- wizard container -->
+
+</body>
+
+<script src="js/jquery-1.10.2.js" type="text/javascript"></script>
+<script src="js/bootstrap.min.js" type="text/javascript"></script>
+<script src="js/jquery.bootstrap.wizard.js" type="text/javascript"></script>
+<script src="js/jquery.validate.min.js"></script>
+<script src="js/wizard.js"></script>
+<script src="js/custom.js"></script>
+
+</html>
