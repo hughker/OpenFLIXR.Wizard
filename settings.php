@@ -1,9 +1,9 @@
 <?php
-
+/*
 foreach ($_POST as $param_name => $param_val) {
     echo "Param: $param_name; Value: $param_val<br />\n";
 }
-
+*/
 
 #password
 $password = $_POST['password'];
@@ -130,8 +130,8 @@ fclose($file);
 
 </head>
 
-<body>
-    <div class="image-container set-full-height" style="background-color: #8C8C8C)">
+<body style="background-color: #8C8C8C";>
+    <div>
 
       <!-- needs realtime output of console -->
 
