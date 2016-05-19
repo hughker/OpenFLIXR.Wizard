@@ -1,1 +1,2 @@
-# OpenFLIXR-Wizard
+# OpenFLIXR.Wizard
+OpenFLIXR Wizard
