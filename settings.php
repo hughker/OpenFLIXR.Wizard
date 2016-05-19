@@ -9,16 +9,14 @@ foreach ($_POST as $param_name => $param_val) {
 $password = $_POST['password'];
 
 #network
-$dhcp = $_POST['dhcp'];
-$static = $_POST['static'];
+$networkconfig = $_POST['networkconfig'];
 $ip = $_POST['ip'];
 $subnet = $_POST['subnet'];
 $gateway = $_POST['gateway'];
 $dns = $_POST['dns'];
 
 #access
-$local = $_POST['local'];
-$remote = $_POST['remote'];
+$letsencrypt = $_POST['letsencrypt'];
 $domainname = $_POST['domainname'];
 $email = $_POST['email'];
 
@@ -57,8 +55,7 @@ $comicvine = $_POST['comicvine'];
 #write config.ini
 $file = fopen("config.ini","w");
 fwrite($file,"[network]
-dhcp = $dhcp
-static = $static
+networkconfig = $networkconfig
 ip = $ip
 subnet = $subnet
 gateway = $gateway
@@ -68,8 +65,7 @@ dns = $dns
 password = $password
 
 [access]
-local = $local
-remote = $remote
+letsencrypt = $letsencrypt
 domainname = $domainname
 email = $email
 
