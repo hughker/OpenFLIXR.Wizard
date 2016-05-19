@@ -50,7 +50,7 @@ $(document).ready(function() {
              }  else if (index == 7) {
                  return validateSeventhStep();
              }  else if (index == 8) {
-                 return validateEightStep();
+                 return validateEighthStep();
              }  else if (index == 9) {
                  return validateNinthStep();
              }
