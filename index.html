@@ -23,7 +23,7 @@
 </head>
 
 <body>
-    <div class="image-container set-full-height" style="background-color: #4C4C4C">
+    <div class="image-container set-full-height" style="background: #4C4C4C">
         <div class="container">
             <div class="row">
                 <div class="col-sm-10 col-sm-offset-1">
@@ -143,20 +143,22 @@
                                                 <div class="col-sm-10 col-sm-offset-1">
                                                     <div class="col-sm-4 col-sm-offset-2">
                                                         <div class="choice active" data-toggle="wizard-radio" rel="tooltip" title="Automatic IP assigment. Choose DHCP if you're not sure what to choose">
-                                                            <input type="radio" name="networkconfig" value="dhcp">
-                                                            <div class="icon" onclick="$('#collapseExample').hide();">
-                                                                <i class="fa fa-magic"></i>
-                                                            </div>
-                                                            <label for="dhcp">DHCP</label>
+                                                            <label for="dhcp">
+                                                                <input type="radio" id="dhcp.on" name="networkconfig" value="dhcp" checked="checked">
+                                                                <div class="icon" onclick="$('#collapseExample').hide();">
+                                                                    <i class="fa fa-magic"></i>
+                                                                </div>
+                                                                DHCP</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="choice" data-toggle="wizard-radio" rel="tooltip" title="Static IP assignment. Only choose when you know what you're doing">
-                                                            <input type="radio" name="networkconfig" value="static">
-                                                            <div class="icon" onclick="$('#collapseExample').show();">
-                                                                <i class="fa fa-wrench"></i>
-                                                            </div>
-                                                            <label for="static">STATIC</label>
+                                                            <label for="static">
+                                                                <input type="radio" id="dhcp.off" name="networkconfig" value="static">
+                                                                <div class="icon" onclick="$('#collapseExample').show();">
+                                                                    <i class="fa fa-wrench"></i>
+                                                                </div>
+                                                                STATIC</label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -209,7 +211,7 @@
                                                 <div class="col-sm-10 col-sm-offset-1">
                                                     <div class="col-sm-4 col-sm-offset-2">
                                                         <div class="choice active" data-toggle="wizard-radio" rel="tooltip" title="Select this option if you want OpenFLIXR to be available only from your local network">
-                                                            <input type="radio" name="letsencrypt" value="off">
+                                                            <input type="radio" name="letsencrypt" value="off" checked="checked">
                                                             <div class="icon" onclick="$('#remote').hide();">
                                                                 <i class="fa fa-home"></i>
                                                             </div>

@@ -154,20 +154,51 @@ function validateSecondStep() {
     return true;
 
 }
+
 function validateThirdStep() {
-    //code here for third step
-    $(".wizard-card form").validate({});
+
+    $(".wizard-card form").validate({
+        rules: {
+            networkconfig: {
+                required: true
+            }
+
+        },
+        messages: {
+            setup: "Please select one of the options",
+            username: "Please enter a username",
+            password: "Please enter a valid password",
+            email: "Please enter a valid email address",
+
+        }
+    });
 
     if (!$(".wizard-card form").valid()) {
         //form is invalid
         return false;
     }
+
     return true;
 }
 
 function validateFourthStep() {
-    //code here for third step
-    $(".wizard-card form").validate({});
+
+    $(".wizard-card form").validate({
+        rules: {
+            letsencrypt: {
+                required: true
+            }
+
+        },
+        messages: {
+            setup: "Please select one of the options",
+            username: "Please enter a username",
+            password: "Please enter a valid password",
+            email: "Please enter a valid email address",
+
+        }
+    });
+
     if (!$(".wizard-card form").valid()) {
         //form is invalid
         return false;
