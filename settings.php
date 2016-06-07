@@ -54,8 +54,7 @@ $comicvine = $_POST['comicvine'];
 
 #write config.ini
 $file = fopen("config.ini","w");
-fwrite($file,"[network]
-networkconfig = $networkconfig
+fwrite($file,"[network]networkconfig = $networkconfig
 ip = $ip
 subnet = $subnet
 gateway = $gateway
@@ -105,9 +104,8 @@ fclose($file);
 
 
 #write setup.sh
-$setupfile = fopen("setup.sh","w");
-fwrite($setupfile,"
-#!/bin/bash
+$file = fopen("setup.sh","w");
+fwrite($file,"#!/bin/bash
 exec 1> >(tee -a /var/log/openflixrsetup.log) 2>&1
 TODAY=$(date)
 echo "-----------------------------------------------------"
@@ -226,7 +224,7 @@ crudini --set /etc/mopidy/mopidy.conf spotify username $spotpass
 bash /opt/openflixr/updatewkly.sh
 reboot now
 ");
-fclose($setupfile);
+fclose($file);
 
 /*
 $startsetup = shell_exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
