@@ -102,6 +102,137 @@ imdb = $imdb
 comicvine = $comicvine
 ");
 fclose($file);
+
+
+#write setup.sh
+$setupfile = fopen("setup.sh","w");
+fwrite($setupfile,"
+#!/bin/bash
+exec 1> >(tee -a /var/log/openflixrsetup.log) 2>&1
+TODAY=$(date)
+echo "-----------------------------------------------------"
+echo "Date:          $TODAY"
+echo "-----------------------------------------------------"
+
+THISUSER=$(whoami)
+    if [ $THISUSER != 'root' ]
+        then
+            echo 'You must use sudo to run this script, sorry!'
+           exit 1
+    fi
+
+## report hypervisor
+hypervisor=$(sudo dmidecode -s system-product-name)
+version=$(cat /opt/openflixr/version)
+
+if [ "$hypervisor" == 'VirtualBox' ]
+then
+    curl "http://www.openflixr.com/stats.php?vm=VirtualBox&version=$version"
+elif [ "$hypervisor" == 'Virtual Machine' ]
+then
+    curl "http://www.openflixr.com/stats.php?vm=HyperV&version=$version"
+elif [ "$hypervisor" == 'Parallels Virtual Platform' ]
+then
+    curl "http://www.openflixr.com/stats.php?vm=Parallels&version=$version"
+elif [ "$hypervisor" == 'VMware Virtual Platform' ]
+then
+    curl "http://www.openflixr.com/stats.php?vm=VMware&version=$version"
+else
+    curl "http://www.openflixr.com/stats.php?vm=Other&version=$version"
+fi
+
+## stop services
+service couchpotato stop
+service headphones stop
+service htpcmanager stop
+service mylar stop
+service sabnzbdplus stop
+service sickrage stop
+service jackett stop
+service sonarr stop
+service mopidy stop
+
+## generate api keys
+couchapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
+sickapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
+headapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
+mylapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
+sabapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
+plexpyapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
+jackapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
+sonapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
+echo "Couchpotato $couchapi" >/opt/openflixr/api.keys
+echo "Sickrage $sickapi" >>/opt/openflixr/api.keys
+echo "Headphones $headapi" >>/opt/openflixr/api.keys
+echo "Mylar $mylapi" >>/opt/openflixr/api.keys
+echo "SABnzbd $sabapi" >>/opt/openflixr/api.keys
+echo "Plexpy $plexpyapi" >>/opt/openflixr/api.keys
+echo "Jackett $jackapi" >>/opt/openflixr/api.keys
+echo "Sonarr $sonapi" >>/opt/openflixr/api.keys
+
+## htpcmanager
+cd /opt/HTPCManager/userdata
+sqlite3 database.db "UPDATE setting SET val='$couchapi' where key='couchpotato_apikey';"
+sqlite3 database.db "UPDATE setting SET val='$headapi' where key='headphones_apikey';"
+sqlite3 database.db "UPDATE setting SET val='$sabapi' where key='sabnzbd_apikey';"
+sqlite3 database.db "UPDATE setting SET val='$sickapi' where key='sickrage_apikey';"
+sqlite3 database.db "UPDATE setting SET val='$mylapi' where key='mylar_apikey';"
+sqlite3 database.db "UPDATE setting SET val='$sonapi' where key='sonarr_apikey';"
+
+## couchpotato
+crudini --set /opt/CouchPotato/settings.conf core api_key $couchapi
+crudini --set /opt/CouchPotato/settings.conf sabnzbd api_key $sabapi
+
+## sickrage
+crudini --set /opt/sickrage/config.ini SABnzbd sab_apikey $sabapi
+crudini --set /opt/sickrage/config.ini General api_key $sickapi
+
+## headphones
+crudini --set /opt/headphones/config.ini General api_key $headapi
+crudini --set /opt/headphones/config.ini SABnzbd sab_apikey $sabapi
+
+## mylar
+crudini --set /opt/Mylar/config.ini General api_key $mylapi
+crudini --set /opt/Mylar/config.ini SABnzbd sab_apikey $sabapi
+
+## sabnzbd
+sed -i 's/^api_key.*/api_key = '$sabapi'/' /home/openflixr/.sabnzbd/sabnzbd.ini
+
+## jackett
+# changing /root/.config/Jackett/ServerConfig.json results in resetting to default values...
+#sed -i 's/^  "APIKey":.*/  "APIKey": = '$jackapi'/' /root/.config/Jackett/ServerConfig.json
+
+## sonarr
+sed -i 's/^  <ApiKey>.*/  <ApiKey>'$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/config.xml
+
+## passwords
+printf "$password\n$password\n" | sudo smbpasswd -a -s openflixr
+echo openflixr:'$password' | sudo chpasswd
+htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
+
+## spotweb
+#users / apikey + passwordhash
+#usersettings / id3 / otherprefs | sabnzbd api + password
+
+## syncthing
+#/opt/syncthing/config.xml
+#        <password>$2a$10$mVingX24TAyv8SCBq7pZjegJdI7P1iZDf9Fmjbf75rQuxlp0.tvPq</password>
+#        <apikey>RhTQmsDI9O5i8dSp85DFPppXSfSjciaT</apikey>
+
+## mopidy spotify
+crudini --set /etc/mopidy/mopidy.conf spotify username $spotuser
+crudini --set /etc/mopidy/mopidy.conf spotify username $spotpass
+
+bash /opt/openflixr/updatewkly.sh
+reboot now
+");
+fclose($setupfile);
+
+/*
+$startsetup = shell_exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
+echo "<pre>$startsetup</pre>";
+*/
+
 ?>
 
 
