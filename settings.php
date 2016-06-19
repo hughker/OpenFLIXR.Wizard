@@ -241,14 +241,14 @@ sed -i 's/^.*#donotremove_trustedcertificatepath/ssl_trusted_certificate \/etc\/
 bash /opt/openflixr/letsencrypt.sh
 
 ## passwords
-printf "$password\n$password\n" | sudo smbpasswd -a -s openflixr
+printf \"$password\n$password\n\" | sudo smbpasswd -a -s openflixr
 echo openflixr:'$password' | sudo chpasswd
 htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 
 ## first need to check all places where mysql root password is set
 # mysqld_safe --skip-grant-tables >res 2>&1 &
 # sleep 5
-# mysql mysql -e "UPDATE user SET Password=PASSWORD('$password') WHERE User='root';FLUSH PRIVILEGES;"
+# mysql mysql -e \"UPDATE user SET Password=PASSWORD('$password') WHERE User='root';FLUSH PRIVILEGES;\"
 
 ## spotweb
 #users / apikey + passwordhash
@@ -265,7 +265,7 @@ crudini --set /etc/mopidy/mopidy.conf spotify username $spotpass
 
 bash /opt/openflixr/updatewkly.sh
 reboot now
-");
+"\");
 fclose($file);
 
 /*
