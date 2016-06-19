@@ -230,6 +230,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 }' 'http://openflixr:3579/request/api/settings/sickrage?apikey=a421d7f486d0426cba8ea9ebfdcb9e6b'
 
 ## letsencrypt
+# if $letsencrypt = enabled
 rm -rf /etc/letsencrypt/
 sed -i 's/^email.*/email = '$email'/' /opt/letsencrypt/cli.ini
 sed -i 's/^domains.*/domains = '$domainname', www.'$domainname'/' /opt/letsencrypt/cli.ini
@@ -237,11 +238,17 @@ sed -i 's/^server_name.*/server_name openflixr '$domainname' www.'$domainname'; 
 sed -i 's/^.*#donotremove_certificatepath/ssl_certificate \/etc\/letsencrypt\/live\/'$domainname'\/fullchain.pem; #donotremove_certificatepath/' /etc/nginx/sites-enabled/reverse
 sed -i 's/^.*#donotremove_certificatekeypath/ssl_certificate_key \/etc\/letsencrypt\/live\/'$domainname'\/privkey.pem; #donotremove_certificatekeypath/' /etc/nginx/sites-enabled/reverse
 sed -i 's/^.*#donotremove_trustedcertificatepath/ssl_trusted_certificate \/etc\/letsencrypt\/live\/'$domainname'\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
+bash /opt/openflixr/letsencrypt.sh
 
 ## passwords
 printf "$password\n$password\n" | sudo smbpasswd -a -s openflixr
 echo openflixr:'$password' | sudo chpasswd
 htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
+
+## first need to check all places where mysql root password is set
+# mysqld_safe --skip-grant-tables >res 2>&1 &
+# sleep 5
+# mysql mysql -e "UPDATE user SET Password=PASSWORD('$password') WHERE User='root';FLUSH PRIVILEGES;"
 
 ## spotweb
 #users / apikey + passwordhash
