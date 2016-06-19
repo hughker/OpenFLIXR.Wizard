@@ -229,6 +229,15 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
   "SubDir": "sickrage"
 }' 'http://openflixr:3579/request/api/settings/sickrage?apikey=a421d7f486d0426cba8ea9ebfdcb9e6b'
 
+## letsencrypt
+rm -rf /etc/letsencrypt/
+sed -i 's/^email.*/email = '$email'/' /opt/letsencrypt/cli.ini
+sed -i 's/^domains.*/domains = '$domainname', www.'$domainname'/' /opt/letsencrypt/cli.ini
+sed -i 's/^server_name.*/server_name openflixr '$domainname' www.'$domainname';  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
+sed -i 's/^.*#donotremove_certificatepath/ssl_certificate \/etc\/letsencrypt\/live\/'$domainname'\/fullchain.pem; #donotremove_certificatepath/' /etc/nginx/sites-enabled/reverse
+sed -i 's/^.*#donotremove_certificatekeypath/ssl_certificate_key \/etc\/letsencrypt\/live\/'$domainname'\/privkey.pem; #donotremove_certificatekeypath/' /etc/nginx/sites-enabled/reverse
+sed -i 's/^.*#donotremove_trustedcertificatepath/ssl_trusted_certificate \/etc\/letsencrypt\/live\/'$domainname'\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
+
 ## passwords
 printf "$password\n$password\n" | sudo smbpasswd -a -s openflixr
 echo openflixr:'$password' | sudo chpasswd
