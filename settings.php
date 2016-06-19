@@ -105,7 +105,7 @@ fclose($file);
 
 #write setup.sh
 $file = fopen("setup.sh","w");
-fwrite($file,\"#!/bin/bash
+fwrite($file,"\"#!/bin/bash
 exec 1> >(tee -a /var/log/openflixrsetup.log) 2>&1
 TODAY=$(date)
 echo \"-----------------------------------------------------\"
@@ -159,23 +159,23 @@ sabapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
 plexpyapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
 jackapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
 sonapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
-echo "Couchpotato $couchapi" >/opt/openflixr/api.keys
-echo "Sickrage $sickapi" >>/opt/openflixr/api.keys
-echo "Headphones $headapi" >>/opt/openflixr/api.keys
-echo "Mylar $mylapi" >>/opt/openflixr/api.keys
-echo "SABnzbd $sabapi" >>/opt/openflixr/api.keys
-echo "Plexpy $plexpyapi" >>/opt/openflixr/api.keys
-echo "Jackett $jackapi" >>/opt/openflixr/api.keys
-echo "Sonarr $sonapi" >>/opt/openflixr/api.keys
+echo \"Couchpotato $couchapi\" >/opt/openflixr/api.keys
+echo \"Sickrage $sickapi\" >>/opt/openflixr/api.keys
+echo \"Headphones $headapi\" >>/opt/openflixr/api.keys
+echo \"Mylar $mylapi\" >>/opt/openflixr/api.keys
+echo \"SABnzbd $sabapi\" >>/opt/openflixr/api.keys
+echo \"Plexpy $plexpyapi\" >>/opt/openflixr/api.keys
+echo \"Jackett $jackapi\" >>/opt/openflixr/api.keys
+echo \"Sonarr $sonapi\" >>/opt/openflixr/api.keys
 
 ## htpcmanager
 cd /opt/HTPCManager/userdata
-sqlite3 database.db "UPDATE setting SET val='$couchapi' where key='couchpotato_apikey';"
-sqlite3 database.db "UPDATE setting SET val='$headapi' where key='headphones_apikey';"
-sqlite3 database.db "UPDATE setting SET val='$sabapi' where key='sabnzbd_apikey';"
-sqlite3 database.db "UPDATE setting SET val='$sickapi' where key='sickrage_apikey';"
-sqlite3 database.db "UPDATE setting SET val='$mylapi' where key='mylar_apikey';"
-sqlite3 database.db "UPDATE setting SET val='$sonapi' where key='sonarr_apikey';"
+sqlite3 database.db \"UPDATE setting SET val='$couchapi' where key='couchpotato_apikey';\"
+sqlite3 database.db \"UPDATE setting SET val='$headapi' where key='headphones_apikey';\"
+sqlite3 database.db \"UPDATE setting SET val='$sabapi' where key='sabnzbd_apikey';\"
+sqlite3 database.db \"UPDATE setting SET val='$sickapi' where key='sickrage_apikey';\"
+sqlite3 database.db \"UPDATE setting SET val='$mylapi' where key='mylar_apikey';\"
+sqlite3 database.db \"UPDATE setting SET val='$sonapi' where key='sonarr_apikey';\"
 
 ## couchpotato
 crudini --set /opt/CouchPotato/settings.conf core api_key $couchapi
@@ -198,7 +198,7 @@ sed -i 's/^api_key.*/api_key = '$sabapi'/' /home/openflixr/.sabnzbd/sabnzbd.ini
 
 ## jackett
 # changing /root/.config/Jackett/ServerConfig.json results in resetting to default values...
-#sed -i 's/^  "APIKey":.*/  "APIKey": = '$jackapi'/' /root/.config/Jackett/ServerConfig.json
+#sed -i 's/^  "APIKey":.*/  \"APIKey\": = '$jackapi'/' /root/.config/Jackett/ServerConfig.json
 
 ## sonarr
 sed -i 's/^  <ApiKey>.*/  <ApiKey>'$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/config.xml
