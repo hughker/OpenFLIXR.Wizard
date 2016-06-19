@@ -198,7 +198,7 @@ sed -i 's/^api_key.*/api_key = '$sabapi'/' /home/openflixr/.sabnzbd/sabnzbd.ini
 
 ## jackett
 # changing /root/.config/Jackett/ServerConfig.json results in resetting to default values...
-#sed -i 's/^  "APIKey":.*/  \"APIKey\": = '$jackapi'/' /root/.config/Jackett/ServerConfig.json
+#sed -i 's/^  \"APIKey\":.*/  \"APIKey\": = '$jackapi'/' /root/.config/Jackett/ServerConfig.json
 
 ## sonarr
 sed -i 's/^  <ApiKey>.*/  <ApiKey>'$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/config.xml
@@ -207,26 +207,26 @@ sed -i 's/^  <ApiKey>.*/  <ApiKey>'$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/c
 plexreqapi=$(curl -X GET --header 'Accept: application/json' 'http://openflixr:3579/request/api/apikey?username=openflixr&password=openflixr' | cut -c10-41)
 
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  "ApiKey": "$couchapi",
-  "Enabled": true,
-  "Ip": "localhost",
-  "Port": 5050,
-  "SubDir": "couchpotato"
+  \"ApiKey\": \"$couchapi\",
+  \"Enabled\": true,
+  \"Ip\": \"localhost\",
+  \"Port\": 5050,
+  \"SubDir\": \"couchpotato\"
 }' 'http://openflixr:3579/request/api/settings/couchpotato?apikey=a421d7f486d0426cba8ea9ebfdcb9e6b'
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  "ApiKey": "$headapi",
-  "Enabled": true,
-  "Ip": "localhost",
-  "Port": 8181,
-  "SubDir": "headphones"
+  \"ApiKey\": \"$headapi\",
+  \"Enabled\": true,
+  \"Ip\": \"localhost\",
+  \"Port\": 8181,
+  \"SubDir\": \"headphones\"
 }' 'http://openflixr:3579/request/api/settings/headphones?apikey=a421d7f486d0426cba8ea9ebfdcb9e6b'
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  "ApiKey": "$sickapi",
-  "qualityProfile": "default",
-  "Enabled": true,
-  "Ip": "localhost",
-  "Port": 8081,
-  "SubDir": "sickrage"
+  \"ApiKey\": \"$sickapi\",
+  \"qualityProfile\": \"default\",
+  \"Enabled\": true,
+  \"Ip\": \"localhost\",
+  \"Port\": 8081,
+  \"SubDir\": \"sickrage\"
 }' 'http://openflixr:3579/request/api/settings/sickrage?apikey=a421d7f486d0426cba8ea9ebfdcb9e6b'
 
 ## letsencrypt
