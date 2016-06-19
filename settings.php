@@ -1,9 +1,9 @@
 <?php
-
+/*
 foreach ($_POST as $param_name => $param_val) {
     echo "Param: $param_name; Value: $param_val<br />\n";
 }
-
+*/
 
 #password
 $password = $_POST['password'];
@@ -105,12 +105,12 @@ fclose($file);
 
 #write setup.sh
 $file = fopen("setup.sh","w");
-fwrite($file,"#!/bin/bash
+fwrite($file,\"#!/bin/bash
 exec 1> >(tee -a /var/log/openflixrsetup.log) 2>&1
 TODAY=$(date)
-echo "-----------------------------------------------------"
-echo "Date:          $TODAY"
-echo "-----------------------------------------------------"
+echo \"-----------------------------------------------------\"
+echo \"Date:          $TODAY\"
+echo \"-----------------------------------------------------\"
 
 THISUSER=$(whoami)
     if [ $THISUSER != 'root' ]
@@ -123,20 +123,20 @@ THISUSER=$(whoami)
 hypervisor=$(sudo dmidecode -s system-product-name)
 version=$(cat /opt/openflixr/version)
 
-if [ "$hypervisor" == 'VirtualBox' ]
+if [ \"$hypervisor\" == 'VirtualBox' ]
 then
-    curl "http://www.openflixr.com/stats.php?vm=VirtualBox&version=$version"
-elif [ "$hypervisor" == 'Virtual Machine' ]
+    curl \"http://www.openflixr.com/stats.php?vm=VirtualBox&version=$version\"
+elif [ \"$hypervisor\" == 'Virtual Machine' ]
 then
-    curl "http://www.openflixr.com/stats.php?vm=HyperV&version=$version"
-elif [ "$hypervisor" == 'Parallels Virtual Platform' ]
+    curl \"http://www.openflixr.com/stats.php?vm=HyperV&version=$version\"
+elif [ \"$hypervisor\" == 'Parallels Virtual Platform' ]
 then
-    curl "http://www.openflixr.com/stats.php?vm=Parallels&version=$version"
-elif [ "$hypervisor" == 'VMware Virtual Platform' ]
+    curl \"http://www.openflixr.com/stats.php?vm=Parallels&version=$version\"
+elif [ \"$hypervisor\" == 'VMware Virtual Platform' ]
 then
-    curl "http://www.openflixr.com/stats.php?vm=VMware&version=$version"
+    curl \"http://www.openflixr.com/stats.php?vm=VMware&version=$version\"
 else
-    curl "http://www.openflixr.com/stats.php?vm=Other&version=$version"
+    curl \"http://www.openflixr.com/stats.php?vm=Other&version=$version\"
 fi
 
 ## stop services
