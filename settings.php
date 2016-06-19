@@ -261,11 +261,11 @@ htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 
 ## mopidy spotify
 crudini --set /etc/mopidy/mopidy.conf spotify username $spotuser
-crudini --set /etc/mopidy/mopidy.conf spotify username $spotpass
+crudini --set /etc/mopidy/mopidy.conf spotify password $spotpass
 
 bash /opt/openflixr/updatewkly.sh
 reboot now
-"\");
+");
 fclose($file);
 
 /*
