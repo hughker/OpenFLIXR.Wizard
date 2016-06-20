@@ -35,7 +35,7 @@ $comicvine = $_POST['comicvine'];
 
 #write setup.sh
 $file = fopen("setup.sh","w");
-fwrite($file,"\"#!/bin/bash
+fwrite($file,"#!/bin/bash
 exec 1> >(tee -a /var/log/openflixrsetup.log) 2>&1
 TODAY=$(date)
 echo \"-----------------------------------------------------\"
@@ -54,19 +54,19 @@ hypervisor=$(sudo dmidecode -s system-product-name)
 version=$(cat /opt/openflixr/version)
 
 if [ \"\$hypervisor\" == 'VirtualBox' ]
-then
-    curl \"http://www.openflixr.com/stats.php?vm=VirtualBox&version=\$version\"
-elif [ \"\$hypervisor\" == 'Virtual Machine' ]
-then
-    curl \"http://www.openflixr.com/stats.php?vm=HyperV&version=\$version\"
-elif [ \"\$hypervisor\" == 'Parallels Virtual Platform' ]
-then
-    curl \"http://www.openflixr.com/stats.php?vm=Parallels&version=\$version\"
-elif [ \"\$hypervisor\" == 'VMware Virtual Platform' ]
-then
-    curl \"http://www.openflixr.com/stats.php?vm=VMware&version=\$version\"
-else
-    curl \"http://www.openflixr.com/stats.php?vm=Other&version=\$version\"
+  then
+      curl \"http://www.openflixr.com/stats.php?vm=VirtualBox&version=\$version\"
+    elif [ \"\$hypervisor\" == 'Virtual Machine' ]
+  then
+      curl \"http://www.openflixr.com/stats.php?vm=HyperV&version=\$version\"
+    elif [ \"\$hypervisor\" == 'Parallels Virtual Platform' ]
+  then
+      curl \"http://www.openflixr.com/stats.php?vm=Parallels&version=\$version\"
+    elif [ \"\$hypervisor\" == 'VMware Virtual Platform' ]
+  then
+      curl \"http://www.openflixr.com/stats.php?vm=VMware&version=\$version\"
+    else
+      curl \"http://www.openflixr.com/stats.php?vm=Other&version=\$version\"
 fi
 
 ## variables
@@ -197,14 +197,14 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 ## letsencrypt
     if [ \$letsencrypt == 'on' ]
         then
-        rm -rf /etc/letsencrypt/
-        sed -i 's/^email.*/email = $email/' /opt/letsencrypt/cli.ini
-        sed -i 's/^domains.*/domains = $domainname, www.$domainname/' /opt/letsencrypt/cli.ini
-        sed -i 's/^server_name.*/server_name openflixr '$domainname' www.'$domainname';  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
-        sed -i 's/^.*#donotremove_certificatepath/ssl_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_certificatepath/' /etc/nginx/sites-enabled/reverse
-        sed -i 's/^.*#donotremove_certificatekeypath/ssl_certificate_key \/etc\/letsencrypt\/live\/$domainname\/privkey.pem; #donotremove_certificatekeypath/' /etc/nginx/sites-enabled/reverse
-        sed -i 's/^.*#donotremove_trustedcertificatepath/ssl_trusted_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
-        bash /opt/openflixr/letsencrypt.sh
+          rm -rf /etc/letsencrypt/
+          sed -i 's/^email.*/email = $email/' /opt/letsencrypt/cli.ini
+          sed -i 's/^domains.*/domains = $domainname, www.$domainname/' /opt/letsencrypt/cli.ini
+          sed -i 's/^server_name.*/server_name openflixr '$domainname' www.'$domainname';  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
+          sed -i 's/^.*#donotremove_certificatepath/ssl_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_certificatepath/' /etc/nginx/sites-enabled/reverse
+          sed -i 's/^.*#donotremove_certificatekeypath/ssl_certificate_key \/etc\/letsencrypt\/live\/$domainname\/privkey.pem; #donotremove_certificatekeypath/' /etc/nginx/sites-enabled/reverse
+          sed -i 's/^.*#donotremove_trustedcertificatepath/ssl_trusted_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
+          bash /opt/openflixr/letsencrypt.sh
     fi
 
 ## network
@@ -235,7 +235,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
           systemctl disable sickrage.service
     fi
 
-## tv nzb downloader
+## nzb downloader
     if [ \$nzbdl == 'sabnzbd' ]
         then
           systemctl disable nzbget.service
@@ -245,7 +245,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
           systemctl disable sabnzbdplus.service
     fi
 
-## mopidy mopify
+## mopidy
     if [ \$mopidy == 'enabled' ]
         then
           systemctl enable mopidy.service
@@ -328,8 +328,7 @@ htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 #        <apikey>RhTQmsDI9O5i8dSp85DFPppXSfSjciaT</apikey>
 
 bash /opt/openflixr/updatewkly.sh
-reboot now
-");
+reboot now");
 fclose($file);
 
 /*
