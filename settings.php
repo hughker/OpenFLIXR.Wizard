@@ -1,10 +1,4 @@
 <?php
-/*
-foreach ($_POST as $param_name => $param_val) {
-    echo "Param: $param_name; Value: $param_val<br />\n";
-}
-*/
-
 #password
 $password = $_POST['password'];
 
@@ -109,11 +103,11 @@ fwrite($file,"\"#!/bin/bash
 exec 1> >(tee -a /var/log/openflixrsetup.log) 2>&1
 TODAY=$(date)
 echo \"-----------------------------------------------------\"
-echo \"Date:          $TODAY\"
+echo \"Date:          \$TODAY\"
 echo \"-----------------------------------------------------\"
 
 THISUSER=$(whoami)
-    if [ $THISUSER != 'root' ]
+    if [ \$THISUSER != 'root' ]
         then
             echo 'You must use sudo to run this script, sorry!'
            exit 1
@@ -123,20 +117,20 @@ THISUSER=$(whoami)
 hypervisor=$(sudo dmidecode -s system-product-name)
 version=$(cat /opt/openflixr/version)
 
-if [ \"$hypervisor\" == 'VirtualBox' ]
+if [ \"\$hypervisor\" == 'VirtualBox' ]
 then
-    curl \"http://www.openflixr.com/stats.php?vm=VirtualBox&version=$version\"
-elif [ \"$hypervisor\" == 'Virtual Machine' ]
+    curl \"http://www.openflixr.com/stats.php?vm=VirtualBox&version=\$version\"
+elif [ \"\$hypervisor\" == 'Virtual Machine' ]
 then
-    curl \"http://www.openflixr.com/stats.php?vm=HyperV&version=$version\"
-elif [ \"$hypervisor\" == 'Parallels Virtual Platform' ]
+    curl \"http://www.openflixr.com/stats.php?vm=HyperV&version=\$version\"
+elif [ \"\$hypervisor\" == 'Parallels Virtual Platform' ]
 then
-    curl \"http://www.openflixr.com/stats.php?vm=Parallels&version=$version\"
-elif [ \"$hypervisor\" == 'VMware Virtual Platform' ]
+    curl \"http://www.openflixr.com/stats.php?vm=Parallels&version=\$version\"
+elif [ \"\$hypervisor\" == 'VMware Virtual Platform' ]
 then
-    curl \"http://www.openflixr.com/stats.php?vm=VMware&version=$version\"
+    curl \"http://www.openflixr.com/stats.php?vm=VMware&version=\$version\"
 else
-    curl \"http://www.openflixr.com/stats.php?vm=Other&version=$version\"
+    curl \"http://www.openflixr.com/stats.php?vm=Other&version=\$version\"
 fi
 
 ## stop services
@@ -159,69 +153,69 @@ sabapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
 plexpyapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
 jackapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
 sonapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
-echo \"Couchpotato $couchapi\" >/opt/openflixr/api.keys
-echo \"Sickrage $sickapi\" >>/opt/openflixr/api.keys
-echo \"Headphones $headapi\" >>/opt/openflixr/api.keys
-echo \"Mylar $mylapi\" >>/opt/openflixr/api.keys
-echo \"SABnzbd $sabapi\" >>/opt/openflixr/api.keys
-echo \"Plexpy $plexpyapi\" >>/opt/openflixr/api.keys
-echo \"Jackett $jackapi\" >>/opt/openflixr/api.keys
-echo \"Sonarr $sonapi\" >>/opt/openflixr/api.keys
+echo \"Couchpotato \$couchapi\" >/opt/openflixr/api.keys
+echo \"Sickrage \$sickapi\" >>/opt/openflixr/api.keys
+echo \"Headphones \$headapi\" >>/opt/openflixr/api.keys
+echo \"Mylar \$mylapi\" >>/opt/openflixr/api.keys
+echo \"SABnzbd \$sabapi\" >>/opt/openflixr/api.keys
+echo \"Plexpy \$plexpyapi\" >>/opt/openflixr/api.keys
+echo \"Jackett \$jackapi\" >>/opt/openflixr/api.keys
+echo \"Sonarr \$sonapi\" >>/opt/openflixr/api.keys
 
 ## htpcmanager
 cd /opt/HTPCManager/userdata
-sqlite3 database.db \"UPDATE setting SET val='$couchapi' where key='couchpotato_apikey';\"
-sqlite3 database.db \"UPDATE setting SET val='$headapi' where key='headphones_apikey';\"
-sqlite3 database.db \"UPDATE setting SET val='$sabapi' where key='sabnzbd_apikey';\"
-sqlite3 database.db \"UPDATE setting SET val='$sickapi' where key='sickrage_apikey';\"
-sqlite3 database.db \"UPDATE setting SET val='$mylapi' where key='mylar_apikey';\"
-sqlite3 database.db \"UPDATE setting SET val='$sonapi' where key='sonarr_apikey';\"
+sqlite3 database.db \"UPDATE setting SET val='\$couchapi' where key='couchpotato_apikey';\"
+sqlite3 database.db \"UPDATE setting SET val='\$headapi' where key='headphones_apikey';\"
+sqlite3 database.db \"UPDATE setting SET val='\$sabapi' where key='sabnzbd_apikey';\"
+sqlite3 database.db \"UPDATE setting SET val='\$sickapi' where key='sickrage_apikey';\"
+sqlite3 database.db \"UPDATE setting SET val='\$mylapi' where key='mylar_apikey';\"
+sqlite3 database.db \"UPDATE setting SET val='\$sonapi' where key='sonarr_apikey';\"
 
 ## couchpotato
-crudini --set /opt/CouchPotato/settings.conf core api_key $couchapi
-crudini --set /opt/CouchPotato/settings.conf sabnzbd api_key $sabapi
+crudini --set /opt/CouchPotato/settings.conf core api_key \$couchapi
+crudini --set /opt/CouchPotato/settings.conf sabnzbd api_key \$sabapi
 
 ## sickrage
-crudini --set /opt/sickrage/config.ini SABnzbd sab_apikey $sabapi
-crudini --set /opt/sickrage/config.ini General api_key $sickapi
+crudini --set /opt/sickrage/config.ini SABnzbd sab_apikey \$sabapi
+crudini --set /opt/sickrage/config.ini General api_key \$sickapi
 
 ## headphones
-crudini --set /opt/headphones/config.ini General api_key $headapi
-crudini --set /opt/headphones/config.ini SABnzbd sab_apikey $sabapi
+crudini --set /opt/headphones/config.ini General api_key \$headapi
+crudini --set /opt/headphones/config.ini SABnzbd sab_apikey \$sabapi
 
 ## mylar
-crudini --set /opt/Mylar/config.ini General api_key $mylapi
-crudini --set /opt/Mylar/config.ini SABnzbd sab_apikey $sabapi
+crudini --set /opt/Mylar/config.ini General api_key \$mylapi
+crudini --set /opt/Mylar/config.ini SABnzbd sab_apikey \$sabapi
 
 ## sabnzbd
-sed -i 's/^api_key.*/api_key = '$sabapi'/' /home/openflixr/.sabnzbd/sabnzbd.ini
+sed -i 's/^api_key.*/api_key = '\$sabapi'/' /home/openflixr/.sabnzbd/sabnzbd.ini
 
 ## jackett
 # changing /root/.config/Jackett/ServerConfig.json results in resetting to default values...
-#sed -i 's/^  \"APIKey\":.*/  \"APIKey\": = '$jackapi'/' /root/.config/Jackett/ServerConfig.json
+#sed -i 's/^  \"APIKey\":.*/  \"APIKey\": = '\$jackapi'/' /root/.config/Jackett/ServerConfig.json
 
 ## sonarr
-sed -i 's/^  <ApiKey>.*/  <ApiKey>'$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/config.xml
+sed -i 's/^  <ApiKey>.*/  <ApiKey>'\$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/config.xml
 
 ## plexrequests
 plexreqapi=$(curl -X GET --header 'Accept: application/json' 'http://openflixr:3579/request/api/apikey?username=openflixr&password=openflixr' | cut -c10-41)
 
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"$couchapi\",
+  \"ApiKey\": \"\$couchapi\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
   \"Port\": 5050,
   \"SubDir\": \"couchpotato\"
 }' 'http://openflixr:3579/request/api/settings/couchpotato?apikey=a421d7f486d0426cba8ea9ebfdcb9e6b'
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"$headapi\",
+  \"ApiKey\": \"\$headapi\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
   \"Port\": 8181,
   \"SubDir\": \"headphones\"
 }' 'http://openflixr:3579/request/api/settings/headphones?apikey=a421d7f486d0426cba8ea9ebfdcb9e6b'
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"$sickapi\",
+  \"ApiKey\": \"\$sickapi\",
   \"qualityProfile\": \"default\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
@@ -230,15 +224,113 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 }' 'http://openflixr:3579/request/api/settings/sickrage?apikey=a421d7f486d0426cba8ea9ebfdcb9e6b'
 
 ## letsencrypt
-# if $letsencrypt = enabled
-rm -rf /etc/letsencrypt/
-sed -i 's/^email.*/email = '$email'/' /opt/letsencrypt/cli.ini
-sed -i 's/^domains.*/domains = '$domainname', www.'$domainname'/' /opt/letsencrypt/cli.ini
-sed -i 's/^server_name.*/server_name openflixr '$domainname' www.'$domainname';  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
-sed -i 's/^.*#donotremove_certificatepath/ssl_certificate \/etc\/letsencrypt\/live\/'$domainname'\/fullchain.pem; #donotremove_certificatepath/' /etc/nginx/sites-enabled/reverse
-sed -i 's/^.*#donotremove_certificatekeypath/ssl_certificate_key \/etc\/letsencrypt\/live\/'$domainname'\/privkey.pem; #donotremove_certificatekeypath/' /etc/nginx/sites-enabled/reverse
-sed -i 's/^.*#donotremove_trustedcertificatepath/ssl_trusted_certificate \/etc\/letsencrypt\/live\/'$domainname'\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
-bash /opt/openflixr/letsencrypt.sh
+    if [ \$letsencrypt == 'on' ]
+        then
+        rm -rf /etc/letsencrypt/
+        sed -i 's/^email.*/email = $email/' /opt/letsencrypt/cli.ini
+        sed -i 's/^domains.*/domains = $domainname, www.$domainname/' /opt/letsencrypt/cli.ini
+        sed -i 's/^server_name.*/server_name openflixr '$domainname' www.'$domainname';  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
+        sed -i 's/^.*#donotremove_certificatepath/ssl_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_certificatepath/' /etc/nginx/sites-enabled/reverse
+        sed -i 's/^.*#donotremove_certificatekeypath/ssl_certificate_key \/etc\/letsencrypt\/live\/$domainname\/privkey.pem; #donotremove_certificatekeypath/' /etc/nginx/sites-enabled/reverse
+        sed -i 's/^.*#donotremove_trustedcertificatepath/ssl_trusted_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
+        bash /opt/openflixr/letsencrypt.sh
+    fi
+
+## network
+    if [ \$networkconfig == 'static' ]
+        then
+        #network config
+    fi
+
+## usenet
+    if [ \$usenetpassword != '' ]
+        then
+        #usenet config
+    fi
+
+## newznab
+    if [ \$newznabapi != '' ]
+        then
+        #newznab config
+    fi
+
+## tv shows downloader
+    if [ \$tvshowsdl == 'sickrage' ]
+        then
+        #config
+    else
+        #config
+    fi
+
+## tv nzb downloader
+    if [ \$nzbdl == 'sabnzbd' ]
+        then
+        #config
+    else
+        #config
+    fi
+
+## mopidy mopify
+    if [ \$mopidy == 'enabled' ]
+        then
+        #config
+    else
+        #config
+    fi
+
+## syncthing
+    if [ \$syncthing == 'enabled' ]
+        then
+        #config
+    else
+        #config
+    fi
+
+## home assistant
+    if [ \$hass == 'enabled' ]
+        then
+        #config
+    else
+        #config
+    fi
+
+## ntopng
+    if [ \$ntopng == 'enabled' ]
+        then
+        #config
+    else
+        #config
+    fi
+
+## headphones vip
+    if [ \$headphonespass != '' ]
+        then
+        #config
+    fi
+
+## anidb
+    if [ \$anidbpass != '' ]
+        then
+        #config
+    fi
+
+## spotify
+    if [ \$spotpass != '' ]
+        then
+        #config
+    fi
+
+## imdb url
+    if [ \$imdb != '' ]
+        then
+        #config
+    fi
+
+## comicvine
+    if [ \$comicvine != '' ]
+        then
+        #config
+    fi
 
 ## passwords
 printf \"$password\n$password\n\" | sudo smbpasswd -a -s openflixr
@@ -274,7 +366,6 @@ echo "<pre>$startsetup</pre>";
 */
 
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
