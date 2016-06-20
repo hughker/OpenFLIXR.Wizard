@@ -1,20 +1,13 @@
 <?php
-#password
 $password = $_POST['password'];
-
-#network
 $networkconfig = $_POST['networkconfig'];
 $ip = $_POST['ip'];
 $subnet = $_POST['subnet'];
 $gateway = $_POST['gateway'];
 $dns = $_POST['dns'];
-
-#access
 $letsencrypt = $_POST['letsencrypt'];
 $domainname = $_POST['domainname'];
 $email = $_POST['email'];
-
-#usenet
 $usenetdescription = $_POST['usenetdescription'];
 $usenetservername = $_POST['usenetservername'];
 $usenetusername = $_POST['usenetusername'];
@@ -22,21 +15,15 @@ $usenetpassword = $_POST['usenetpassword'];
 $usenetport = $_POST['usenetport'];
 $usenetthreads = $_POST['usenetthreads'];
 $usenetssl = $_POST['usenetssl'];
-
-#newznab
 $newznabprovider = $_POST['newznabprovider'];
 $newznaburl = $_POST['newznaburl'];
 $newznabapi = $_POST['newznabapi'];
-
-#modules
 $tvshowdl = $_POST['tvshowdl'];
 $nzbdl = $_POST['nzbdl'];
 $mopidy = $_POST['mopidy'];
 $syncthing = $_POST['syncthing'];
 $hass = $_POST['hass'];
 $ntopng = $_POST['ntopng'];
-
-#extras
 $headphonesuser = $_POST['headphonesuser'];
 $headphonespass = $_POST['headphonespass'];
 $anidbuser = $_POST['anidbuser'];
@@ -45,57 +32,6 @@ $spotuser = $_POST['spotuser'];
 $spotpass = $_POST['spotpass'];
 $imdb = $_POST['imdb'];
 $comicvine = $_POST['comicvine'];
-
-#write config.ini
-$file = fopen("config.ini","w");
-fwrite($file,"[network]
-networkconfig = $networkconfig
-ip = $ip
-subnet = $subnet
-gateway = $gateway
-dns = $dns
-
-[password]
-password = $password
-
-[access]
-letsencrypt = $letsencrypt
-domainname = $domainname
-email = $email
-
-[usenet]
-usenetdescription = $usenetdescription
-usenetservername = $usenetservername
-usenetusername = $usenetusername
-usenetpassword = $usenetpassword
-usenetport = $usenetport
-usenetthreads = $usenetthreads
-usenetssl = $usenetssl
-
-[newznab]
-newznabprovider = $newznabprovider
-newznaburl = $newznaburl
-newznabapi = $newznabapi
-
-[modules]
-tvshowsdl = $tvshowdl
-nzbdl = $nzbdl
-mopidy = $mopidy
-syncthing = $syncthing
-hass = $hass
-ntopng = $ntopng
-
-[extras]
-headphonesuser = $headphonesuser
-headphonespass = $headphonespass
-anidbuser = $anidbuser
-anidbpass = $anidbpass
-spotuser = $spotuser
-spotpass = $spotpass
-imdb = $imdb
-comicvine = $comicvine
-");
-fclose($file);
 
 #write setup.sh
 $file = fopen("setup.sh","w");
@@ -132,6 +68,41 @@ then
 else
     curl \"http://www.openflixr.com/stats.php?vm=Other&version=\$version\"
 fi
+
+## variables
+networkconfig=$networkconfig
+ip=$ip
+subnet=$subnet
+gateway=$gateway
+dns=$dns
+password=$password
+letsencrypt=$letsencrypt
+domainname=$domainname
+email=$email
+usenetdescription=$usenetdescription
+usenetservername=$usenetservername
+usenetusername=$usenetusername
+usenetpassword=$usenetpassword
+usenetport=$usenetport
+usenetthreads=$usenetthreads
+usenetssl=$usenetssl
+newznabprovider=$newznabprovider
+newznaburl=$newznaburl
+newznabapi=$newznabapi
+tvshowsdl=$tvshowdl
+nzbdl=$nzbdl
+mopidy=$mopidy
+syncthing=$syncthing
+hass=$hass
+ntopng=$ntopng
+headphonesuser=$headphonesuser
+headphonespass=$headphonespass
+anidbuser=$anidbuser
+anidbpass=$anidbpass
+spotuser=$spotuser
+spotpass=$spotpass
+imdb=$imdb
+comicvine=$comicvine
 
 ## stop services
 service couchpotato stop
@@ -206,14 +177,14 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
   \"Ip\": \"localhost\",
   \"Port\": 5050,
   \"SubDir\": \"couchpotato\"
-}' 'http://openflixr:3579/request/api/settings/couchpotato?apikey=a421d7f486d0426cba8ea9ebfdcb9e6b'
+}' 'http://openflixr:3579/request/api/settings/couchpotato?apikey=\$plexreqapi'
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"\$headapi\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
   \"Port\": 8181,
   \"SubDir\": \"headphones\"
-}' 'http://openflixr:3579/request/api/settings/headphones?apikey=a421d7f486d0426cba8ea9ebfdcb9e6b'
+}' 'http://openflixr:3579/request/api/settings/headphones?apikey=\$plexreqapi'
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"\$sickapi\",
   \"qualityProfile\": \"default\",
@@ -221,7 +192,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
   \"Ip\": \"localhost\",
   \"Port\": 8081,
   \"SubDir\": \"sickrage\"
-}' 'http://openflixr:3579/request/api/settings/sickrage?apikey=a421d7f486d0426cba8ea9ebfdcb9e6b'
+}' 'http://openflixr:3579/request/api/settings/sickrage?apikey=\$plexreqapi'
 
 ## letsencrypt
     if [ \$letsencrypt == 'on' ]
