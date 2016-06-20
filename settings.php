@@ -71,18 +71,18 @@ fi
 
 ## variables
 networkconfig=$networkconfig
-ip=$ip
-subnet=$subnet
-gateway=$gateway
-dns=$dns
-password=$password
+ip='$ip'
+subnet='$subnet'
+gateway='$gateway'
+dns='$dns'
+password='$password'
 letsencrypt=$letsencrypt
 domainname=$domainname
 email=$email
 usenetdescription=$usenetdescription
 usenetservername=$usenetservername
 usenetusername=$usenetusername
-usenetpassword=$usenetpassword
+usenetpassword='$usenetpassword'
 usenetport=$usenetport
 usenetthreads=$usenetthreads
 usenetssl=$usenetssl
@@ -96,11 +96,11 @@ syncthing=$syncthing
 hass=$hass
 ntopng=$ntopng
 headphonesuser=$headphonesuser
-headphonespass=$headphonespass
+headphonespass='$headphonespass'
 anidbuser=$anidbuser
-anidbpass=$anidbpass
+anidbpass='$anidbpass'
 spotuser=$spotuser
-spotpass=$spotpass
+spotpass='$spotpass'
 imdb=$imdb
 comicvine=$comicvine
 
@@ -208,7 +208,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
     fi
 
 ## network
-    if [ \$networkconfig == 'static' ]
+    if [ \$networkconfig != 'dhcp' ]
         then
         #network config
     fi
@@ -228,49 +228,53 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 ## tv shows downloader
     if [ \$tvshowsdl == 'sickrage' ]
         then
-        #config
-    else
-        #config
+          systemctl disable sonarr.service
+          systemctl enable sickrage.service
+        else
+          systemctl enable sonarr.service
+          systemctl disable sickrage.service
     fi
 
 ## tv nzb downloader
     if [ \$nzbdl == 'sabnzbd' ]
         then
-        #config
+          systemctl disable nzbget.service
+          systemctl enable sabnzbdplus.service
     else
-        #config
+          systemctl enable nzbget.service
+          systemctl disable sabnzbdplus.service
     fi
 
 ## mopidy mopify
     if [ \$mopidy == 'enabled' ]
         then
-        #config
+          systemctl enable mopidy.service
     else
-        #config
+          systemctl disable mopidy.service
     fi
 
 ## syncthing
     if [ \$syncthing == 'enabled' ]
         then
-        #config
+          systemctl enable syncthing.service
     else
-        #config
+          systemctl disable syncthing.service
     fi
 
 ## home assistant
     if [ \$hass == 'enabled' ]
         then
-        #config
+          systemctl enable home-assistant.service
     else
-        #config
+          systemctl disable home-assistant.service
     fi
 
 ## ntopng
     if [ \$ntopng == 'enabled' ]
         then
-        #config
+          systemctl enable ntopng.service
     else
-        #config
+          systemctl disable ntopng.service
     fi
 
 ## headphones vip
@@ -288,13 +292,14 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 ## spotify
     if [ \$spotpass != '' ]
         then
-        #config
+          crudini --set /etc/mopidy/mopidy.conf spotify username $spotuser
+          crudini --set /etc/mopidy/mopidy.conf spotify password $spotpass
     fi
 
 ## imdb url
     if [ \$imdb != '' ]
         then
-        #config
+          crudini --set /opt/CouchPotato/settings.conf imdb automation_urls $imdb
     fi
 
 ## comicvine
@@ -321,10 +326,6 @@ htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 #/opt/syncthing/config.xml
 #        <password>$2a$10$mVingX24TAyv8SCBq7pZjegJdI7P1iZDf9Fmjbf75rQuxlp0.tvPq</password>
 #        <apikey>RhTQmsDI9O5i8dSp85DFPppXSfSjciaT</apikey>
-
-## mopidy spotify
-crudini --set /etc/mopidy/mopidy.conf spotify username $spotuser
-crudini --set /etc/mopidy/mopidy.conf spotify password $spotpass
 
 bash /opt/openflixr/updatewkly.sh
 reboot now
