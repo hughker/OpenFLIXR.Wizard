@@ -121,7 +121,6 @@ sickapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
 headapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
 mylapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
 sabapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
-plexpyapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
 jackapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
 sonapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
 echo \"Couchpotato \$couchapi\" >/opt/openflixr/api.keys
@@ -129,7 +128,6 @@ echo \"Sickrage \$sickapi\" >>/opt/openflixr/api.keys
 echo \"Headphones \$headapi\" >>/opt/openflixr/api.keys
 echo \"Mylar \$mylapi\" >>/opt/openflixr/api.keys
 echo \"SABnzbd \$sabapi\" >>/opt/openflixr/api.keys
-echo \"Plexpy \$plexpyapi\" >>/opt/openflixr/api.keys
 echo \"Jackett \$jackapi\" >>/opt/openflixr/api.keys
 echo \"Sonarr \$sonapi\" >>/opt/openflixr/api.keys
 
@@ -216,7 +214,14 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 ## usenet
     if [ \$usenetpassword != '' ]
         then
-        #usenet config
+          service sabnzbdplus start
+          curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&ssl=$usenetssl&apikey=\$sabapi
+          curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&displayname=$usenetdescription&apikey=\$sabapi
+          curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&username=$usenetusername&apikey=\$sabapi
+          curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&password=$usenetpassword&apikey=\$sabapi
+          curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&host=$usenetservername&apikey=\$sabapi
+          curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&port=$usenetport&apikey=\$sabapi
+          curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&connections=$usenetthreads&apikey=\$sabapi
     fi
 
 ## newznab
@@ -280,33 +285,61 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 ## headphones vip
     if [ \$headphonespass != '' ]
         then
-        #config
+          crudini --set /opt/headphones/config.ini General hpuser $headphonesuser
+          crudini --set /opt/headphones/config.ini General hppass $headphonespass
+          crudini --set /opt/headphones/config.ini General headphones_indexer 1
+    else
+          crudini --set /opt/headphones/config.ini General hpuser
+          crudini --set /opt/headphones/config.ini General hppass
+          crudini --set /opt/headphones/config.ini General headphones_indexer 0
     fi
 
 ## anidb
     if [ \$anidbpass != '' ]
         then
-        #config
+          crudini --set /opt/sickrage/config.ini ANIDB use_anidb 1
+          crudini --set /opt/sickrage/config.ini ANIDB anidb_password $anidbuser
+          crudini --set /opt/sickrage/config.ini ANIDB anidb_username $anidbpass
+    else
+          crudini --set /opt/sickrage/config.ini ANIDB use_anidb 0
+          crudini --set /opt/sickrage/config.ini ANIDB anidb_password
+          crudini --set /opt/sickrage/config.ini ANIDB anidb_username
     fi
 
-## spotify
+## spotify mopidy
     if [ \$spotpass != '' ]
         then
           crudini --set /etc/mopidy/mopidy.conf spotify username $spotuser
           crudini --set /etc/mopidy/mopidy.conf spotify password $spotpass
+    else
+          crudini --set /etc/mopidy/mopidy.conf spotify username
+          crudini --set /etc/mopidy/mopidy.conf spotify password
     fi
 
 ## imdb url
     if [ \$imdb != '' ]
         then
           crudini --set /opt/CouchPotato/settings.conf imdb automation_urls $imdb
+    else
+          crudini --set /opt/CouchPotato/settings.conf imdb automation_urls
     fi
 
 ## comicvine
     if [ \$comicvine != '' ]
         then
-        #config
+          crudini --set /opt/Mylar/config.ini General comicvine_api $comicvine
+    else
+          crudini --set /opt/Mylar/config.ini General comicvine_api
     fi
+
+## spotweb
+#users / apikey + passwordhash
+#usersettings / id3 / otherprefs | sabnzbd api + password
+
+## syncthing
+#/opt/syncthing/config.xml
+#        <password></password>
+#        <apikey></apikey>
 
 ## passwords
 printf \"$password\n$password\n\" | sudo smbpasswd -a -s openflixr
@@ -317,15 +350,6 @@ htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 # mysqld_safe --skip-grant-tables >res 2>&1 &
 # sleep 5
 # mysql mysql -e \"UPDATE user SET Password=PASSWORD('$password') WHERE User='root';FLUSH PRIVILEGES;\"
-
-## spotweb
-#users / apikey + passwordhash
-#usersettings / id3 / otherprefs | sabnzbd api + password
-
-## syncthing
-#/opt/syncthing/config.xml
-#        <password>$2a$10$mVingX24TAyv8SCBq7pZjegJdI7P1iZDf9Fmjbf75rQuxlp0.tvPq</password>
-#        <apikey>RhTQmsDI9O5i8dSp85DFPppXSfSjciaT</apikey>
 
 bash /opt/openflixr/updatewkly.sh
 reboot now");
