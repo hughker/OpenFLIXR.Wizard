@@ -198,23 +198,28 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
           rm -rf /etc/letsencrypt/
           sed -i 's/^email.*/email = $email/' /opt/letsencrypt/cli.ini
           sed -i 's/^domains.*/domains = $domainname, www.$domainname/' /opt/letsencrypt/cli.ini
-          sed -i 's/^server_name.*/server_name openflixr '$domainname' www.'$domainname';  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
+          sed -i 's/^server_name.*/server_name openflixr $domainname www.$domainname;  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
           sed -i 's/^.*#donotremove_certificatepath/ssl_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_certificatepath/' /etc/nginx/sites-enabled/reverse
           sed -i 's/^.*#donotremove_certificatekeypath/ssl_certificate_key \/etc\/letsencrypt\/live\/$domainname\/privkey.pem; #donotremove_certificatekeypath/' /etc/nginx/sites-enabled/reverse
           sed -i 's/^.*#donotremove_trustedcertificatepath/ssl_trusted_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
           bash /opt/openflixr/letsencrypt.sh
+    else
+          #reverse
     fi
 
 ## network
     if [ \$networkconfig != 'dhcp' ]
         then
         #network config
+    else
+        # dhcp
     fi
 
 ## usenet
     if [ \$usenetpassword != '' ]
         then
           service sabnzbdplus start
+          curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&enable=1&apikey=\$sabapi
           curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&ssl=$usenetssl&apikey=\$sabapi
           curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&displayname=$usenetdescription&apikey=\$sabapi
           curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&username=$usenetusername&apikey=\$sabapi
@@ -222,6 +227,8 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
           curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&host=$usenetservername&apikey=\$sabapi
           curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&port=$usenetport&apikey=\$sabapi
           curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&connections=$usenetthreads&apikey=\$sabapi
+    else
+          curl http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&enable=0&apikey=\$sabapi
     fi
 
 ## newznab
