@@ -369,6 +369,11 @@ echo "<pre>$startsetup</pre>";
 
 ?>
 
+<?php
+   header("/log");
+   exit;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
