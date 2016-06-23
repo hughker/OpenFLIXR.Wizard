@@ -369,11 +369,6 @@ echo "<pre>$startsetup</pre>";
 
 ?>
 
-<?php
-   header("/log");
-   exit;
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -400,10 +395,10 @@ echo "<pre>$startsetup</pre>";
 </head>
 
 <body style="background-color: #8C8C8C";>
-    <div>
 
-      <!-- needs realtime output of console -->
+<div class="embed-responsive embed-responsive-16by9">
+  <iframe class="embed-responsive-item" src="/log/"></iframe>
+</div>
 
-    </div>
 </body>
 </html>
