@@ -349,7 +349,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 #        <apikey></apikey>
 
 ## passwords
-printf \"$password\n$password\n\" | sudo smbpasswd -a -s openflixr
+printf \"$password\\n$password\\n\" | sudo smbpasswd -a -s openflixr
 echo openflixr:'$password' | sudo chpasswd
 htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 
@@ -379,7 +379,7 @@ echo "<pre>$startsetup</pre>";
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>OpenFLIXR setup finished</title>
+    <title>OpenFLIXR Setup - Configuring System</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/stylish-portfolio.css" rel="stylesheet">
     <link href="css/gsdk-base.css" rel="stylesheet" />
