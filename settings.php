@@ -204,7 +204,10 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
           sed -i 's/^.*#donotremove_trustedcertificatepath/ssl_trusted_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
           bash /opt/openflixr/letsencrypt.sh
     else
-          #reverse
+          sed -i 's/^server_name.*/server_name openflixr;  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
+          sed -i 's/^.*#donotremove_certificatepath/#ssl_certificate \/etc\/letsencrypt\/live\/example\/fullchain.pem; #donotremove_certificatepath/' /etc/nginx/sites-enabled/reverse
+          sed -i 's/^.*#donotremove_certificatekeypath/#ssl_certificate_key \/etc\/letsencrypt\/live\/example\/privkey.pem; #donotremove_certificatekeypath/' /etc/nginx/sites-enabled/reverse
+          sed -i 's/^.*#donotremove_trustedcertificatepath/#ssl_trusted_certificate \/etc\/letsencrypt\/live\/example\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
     fi
 
 ## usenet
@@ -353,6 +356,7 @@ htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 bash /opt/openflixr/updatewkly.sh
 
 ## network
+nwadapter=$(ifconfig -a | sed -n 's/^\([^ ]\+\).*/\\1/p' | grep -Fvx -e lo -e dummy0)
     if [ \$networkconfig != 'dhcp' ]
         then
 cat > /etc/network/interfaces<<EOF
@@ -362,14 +366,14 @@ cat > /etc/network/interfaces<<EOF
 source /etc/network/interfaces.d/*
 
 # The loopback network interface
-auto lo eno16777736
+auto lo \$nwadapter
 iface lo inet loopback
 
 # The primary network interface
-iface eno16777736 inet static
-address echo $ip
-netmask echo $subnet
-gateway echo $gateway
+iface \$nwadapter inet static
+address $ip
+netmask $subnet
+gateway $gateway
 dns-nameservers $dns
 EOF
     else
@@ -380,11 +384,11 @@ cat > /etc/network/interfaces<<EOF
 source /etc/network/interfaces.d/*
 
 # The loopback network interface
-auto lo eno16777736
+auto lo \$nwadapter
 iface lo inet loopback
 
 # The primary network interface
-iface eno16777736 inet dhcp
+iface \$nwadapter inet dhcp
 dns-nameservers 8.8.8.8 8.8.4.4
 EOF
     fi
