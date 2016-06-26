@@ -396,10 +396,8 @@ EOF
 reboot now");
 fclose($file);
 
-/*
-$startsetup = shell_exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
-echo "<pre>$startsetup</pre>";
-*/
+exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
+echo 'sudo whoami';
 
 ?>
 
@@ -431,7 +429,7 @@ echo "<pre>$startsetup</pre>";
 <body style="background-color: black";>
 
 <div class="embed-responsive embed-responsive-16by9">
-  <iframe class="embed-responsive-item" src="/log/"></iframe>
+<!--  <iframe class="embed-responsive-item" src="/log/"></iframe>-->
 </div>
 
 </body>
