@@ -207,14 +207,6 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
           #reverse
     fi
 
-## network
-    if [ \$networkconfig != 'dhcp' ]
-        then
-        #network config
-    else
-        # dhcp
-    fi
-
 ## usenet
     if [ \$usenetpassword != '' ]
         then
@@ -359,6 +351,44 @@ htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 # mysql mysql -e \"UPDATE user SET Password=PASSWORD('$password') WHERE User='root';FLUSH PRIVILEGES;\"
 
 bash /opt/openflixr/updatewkly.sh
+
+## network
+    if [ \$networkconfig != 'dhcp' ]
+        then
+cat > /etc/network/interfaces<<EOF
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo eno16777736
+iface lo inet loopback
+
+# The primary network interface
+iface eno16777736 inet static
+address echo $ip
+netmask echo $subnet
+gateway echo $gateway
+dns-nameservers $dns
+EOF
+    else
+cat > /etc/network/interfaces<<EOF
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo eno16777736
+iface lo inet loopback
+
+# The primary network interface
+iface eno16777736 inet dhcp
+dns-nameservers 8.8.8.8 8.8.4.4
+EOF
+    fi
+
 reboot now");
 fclose($file);
 
@@ -394,7 +424,7 @@ echo "<pre>$startsetup</pre>";
 
 </head>
 
-<body style="background-color: #8C8C8C";>
+<body style="background-color: black";>
 
 <div class="embed-responsive embed-responsive-16by9">
   <iframe class="embed-responsive-item" src="/log/"></iframe>
