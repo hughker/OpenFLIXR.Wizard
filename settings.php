@@ -337,7 +337,7 @@ htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 # sleep 5
 # mysql mysql -e \"UPDATE user SET Password=PASSWORD('$password') WHERE User='root';FLUSH PRIVILEGES;\"
 
-bash /opt/openflixr/updatewkly.sh
+#bash /opt/openflixr/updatewkly.sh
 
 ## network
 nwadapter=$(ifconfig -a | sed -n 's/^\([^ ]\+\).*/\\1/p' | grep -Fvx -e lo -e dummy0)
@@ -399,6 +399,7 @@ reboot now");
 fclose($file);
 
 exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
+sleep(3);
 
 ?>
 
