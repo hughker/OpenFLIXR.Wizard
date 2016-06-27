@@ -79,30 +79,30 @@ password='$password'
 letsencrypt=$letsencrypt
 domainname=$domainname
 email=$email
-usenetdescription=$usenetdescription
+usenetdescription='$usenetdescription'
 usenetservername=$usenetservername
-usenetusername=$usenetusername
+usenetusername='$usenetusername'
 usenetpassword='$usenetpassword'
 usenetport=$usenetport
 usenetthreads=$usenetthreads
 usenetssl=$usenetssl
-newznabprovider=$newznabprovider
+newznabprovider='$newznabprovider'
 newznaburl=$newznaburl
-newznabapi=$newznabapi
+newznabapi='$newznabapi'
 tvshowsdl=$tvshowdl
 nzbdl=$nzbdl
 mopidy=$mopidy
 syncthing=$syncthing
 hass=$hass
 ntopng=$ntopng
-headphonesuser=$headphonesuser
+headphonesuser='$headphonesuser'
 headphonespass='$headphonespass'
-anidbuser=$anidbuser
+anidbuser='$anidbuser'
 anidbpass='$anidbpass'
-spotuser=$spotuser
+spotuser='$spotuser'
 spotpass='$spotpass'
 imdb=$imdb
-comicvine=$comicvine
+comicvine='$comicvine'
 
 ## stop services
 service couchpotato stop
@@ -167,7 +167,7 @@ sed -i 's/^api_key.*/api_key = '\$sabapi'/' /home/openflixr/.sabnzbd/sabnzbd.ini
 sed -i 's/^  <ApiKey>.*/  <ApiKey>'\$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/config.xml
 
 ## plexrequests
-plexreqapi=$(curl -s -X GET --header 'Accept: application/json' 'http://openflixr:3579/request/api/apikey?username=openflixr&password=openflixr' | cut -c10-41)
+plexreqapi=$(curl -s -X GET --header 'Accept: application/json' 'http://localhost:3579/request/api/apikey?username=openflixr&password=openflixr' | cut -c10-41)
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"\$couchapi\",
@@ -175,14 +175,14 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
   \"Ip\": \"localhost\",
   \"Port\": 5050,
   \"SubDir\": \"couchpotato\"
-}' 'http://openflixr:3579/request/api/settings/couchpotato?apikey=\$plexreqapi'
+}' 'http://localhost:3579/request/api/settings/couchpotato?apikey=\$plexreqapi'
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"\$headapi\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
   \"Port\": 8181,
   \"SubDir\": \"headphones\"
-}' 'http://openflixr:3579/request/api/settings/headphones?apikey=\$plexreqapi'
+}' 'http://localhost:3579/request/api/settings/headphones?apikey=\$plexreqapi'
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"\$sickapi\",
   \"qualityProfile\": \"default\",
@@ -190,31 +190,31 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
   \"Ip\": \"localhost\",
   \"Port\": 8081,
   \"SubDir\": \"sickrage\"
-}' 'http://openflixr:3579/request/api/settings/sickrage?apikey=\$plexreqapi'
+}' 'http://localhost:3579/request/api/settings/sickrage?apikey=\$plexreqapi'
 
 ## usenet
     if [ \$usenetpassword != '' ]
         then
           service sabnzbdplus start
-          curl -s 'http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&enable=1&apikey=\$sabapi'
-          curl -s 'http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&ssl=$usenetssl&apikey=\$sabapi'
-          curl -s 'http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&displayname=$usenetdescription&apikey=\$sabapi'
-          curl -s 'http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&username=$usenetusername&apikey=\$sabapi'
-          curl -s 'http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&password=$usenetpassword&apikey=\$sabapi'
-          curl -s 'http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&host=$usenetservername&apikey=\$sabapi'
-          curl -s 'http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&port=$usenetport&apikey=\$sabapi'
-          curl -s 'http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&connections=$usenetthreads&apikey=\$sabapi'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&enable=1&apikey=\$sabapi'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&ssl=$usenetssl&apikey=\$sabapi'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&displayname=$usenetdescription&apikey=\$sabapi'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&username=$usenetusername&apikey=\$sabapi'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&password=$usenetpassword&apikey=\$sabapi'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&host=$usenetservername&apikey=\$sabapi'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&port=$usenetport&apikey=\$sabapi'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&connections=$usenetthreads&apikey=\$sabapi'
     else
-          curl -s 'http://openflixr:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&enable=0&apikey=\$sabapi'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&enable=0&apikey=\$sabapi'
     fi
 
 ## newznab
-    if [ \$newznabapi != '' ]
-        then
-        #newznab config
-        else
-        #reverse
-    fi
+#    if [ \$newznabapi != '' ]
+#        then
+#         newznab config
+#        else
+#         reverse
+#    fi
 
 ## tv shows downloader
     if [ \$tvshowsdl == 'sickrage' ]
@@ -347,7 +347,7 @@ cat > /etc/network/interfaces<<EOF
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
 
-source /etc/network/interfaces.d/*
+source /etc/network/interfaces.d/\*
 
 # The loopback network interface
 auto lo \$nwadapter
@@ -365,7 +365,7 @@ cat > /etc/network/interfaces<<EOF
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
 
-source /etc/network/interfaces.d/*
+source /etc/network/interfaces.d/\*
 
 # The loopback network interface
 auto lo \$nwadapter
