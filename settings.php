@@ -55,18 +55,18 @@ version=$(cat /opt/openflixr/version)
 
 if [ \"\$hypervisor\" == 'VirtualBox' ]
   then
-      curl \"http://www.openflixr.com/stats.php?vm=VirtualBox&version=\$version\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=VirtualBox&version=\$version\"
     elif [ \"\$hypervisor\" == 'Virtual Machine' ]
   then
-      curl \"http://www.openflixr.com/stats.php?vm=HyperV&version=\$version\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=HyperV&version=\$version\"
     elif [ \"\$hypervisor\" == 'Parallels Virtual Platform' ]
   then
-      curl \"http://www.openflixr.com/stats.php?vm=Parallels&version=\$version\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=Parallels&version=\$version\"
     elif [ \"\$hypervisor\" == 'VMware Virtual Platform' ]
   then
-      curl \"http://www.openflixr.com/stats.php?vm=VMware&version=\$version\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=VMware&version=\$version\"
     else
-      curl \"http://www.openflixr.com/stats.php?vm=Other&version=\$version\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=Other&version=\$version\"
 fi
 
 ## variables
@@ -175,14 +175,14 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
   \"Ip\": \"localhost\",
   \"Port\": 5050,
   \"SubDir\": \"couchpotato\"
-}' 'http://localhost:3579/request/api/settings/couchpotato?apikey=\$plexreqapi'
+}' 'http://localhost:3579/request/api/settings/couchpotato?apikey='\$plexreqapi''
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"\$headapi\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
   \"Port\": 8181,
   \"SubDir\": \"headphones\"
-}' 'http://localhost:3579/request/api/settings/headphones?apikey=\$plexreqapi'
+}' 'http://localhost:3579/request/api/settings/headphones?apikey='\$plexreqapi''
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"\$sickapi\",
   \"qualityProfile\": \"default\",
@@ -190,10 +190,10 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
   \"Ip\": \"localhost\",
   \"Port\": 8081,
   \"SubDir\": \"sickrage\"
-}' 'http://localhost:3579/request/api/settings/sickrage?apikey=\$plexreqapi'
+}' 'http://localhost:3579/request/api/settings/sickrage?apikey='\$plexreqapi''
 
 ## usenet
-    if [ \$usenetpassword != '' ]
+    if [ \"\$usenetpassword\" != '' ]
         then
           service sabnzbdplus start
           curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&enable=1&apikey=\$sabapi'
@@ -209,7 +209,7 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
     fi
 
 ## newznab
-#    if [ \$newznabapi != '' ]
+#    if [ \"\$newznabapi\" != '' ]
 #        then
 #         newznab config
 #        else
@@ -217,35 +217,35 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
 #    fi
 
 ## tv shows downloader
-    if [ \$tvshowsdl == 'sickrage' ]
+    if [ \"\$tvshowsdl\" == 'sickrage' ]
         then
           systemctl disable sonarr.service
-          systemctl enable sickrage.service
+          update-rc.d sickrage enable
         else
           systemctl enable sonarr.service
-          systemctl disable sickrage.service
+          update-rc.d sickrage disable
     fi
 
 ## nzb downloader
-    if [ \$nzbdl == 'sabnzbd' ]
+    if [ \"\$nzbdl\" == 'sabnzbd' ]
         then
           systemctl disable nzbget.service
-          systemctl enable sabnzbdplus.service
+          update-rc.d sabnzbdplus enable
     else
           systemctl enable nzbget.service
-          systemctl disable sabnzbdplus.service
+          update-rc.d sabnzbdplus disable
     fi
 
 ## mopidy
-    if [ \$mopidy == 'enabled' ]
+    if [ \"\$mopidy\" == 'enabled' ]
         then
-          systemctl enable mopidy.service
+          update-rc.d mopidy enable
     else
-          systemctl disable mopidy.service
+          update-rc.d mopidy disable
     fi
 
 ## syncthing
-    if [ \$syncthing == 'enabled' ]
+    if [ \"\$syncthing\" == 'enabled' ]
         then
           systemctl enable syncthing.service
     else
@@ -253,7 +253,7 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
     fi
 
 ## home assistant
-    if [ \$hass == 'enabled' ]
+    if [ \"\$hass\" == 'enabled' ]
         then
           systemctl enable home-assistant.service
     else
@@ -261,15 +261,15 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
     fi
 
 ## ntopng
-    if [ \$ntopng == 'enabled' ]
+    if [ \"\$ntopng\" == 'enabled' ]
         then
-          systemctl enable ntopng.service
+          update-rc.d ntopng enable
     else
-          systemctl disable ntopng.service
+          update-rc.d ntopng disable
     fi
 
 ## headphones vip
-    if [ \$headphonespass != '' ]
+    if [ \"\$headphonespass\" != '' ]
         then
           crudini --set /opt/headphones/config.ini General hpuser $headphonesuser
           crudini --set /opt/headphones/config.ini General hppass $headphonespass
@@ -281,7 +281,7 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
     fi
 
 ## anidb
-    if [ \$anidbpass != '' ]
+    if [ \"\$anidbpass\" != '' ]
         then
           crudini --set /opt/sickrage/config.ini ANIDB use_anidb 1
           crudini --set /opt/sickrage/config.ini ANIDB anidb_password $anidbuser
@@ -293,7 +293,7 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
     fi
 
 ## spotify mopidy
-    if [ \$spotpass != '' ]
+    if [ \"\$spotpass\" != '' ]
         then
           crudini --set /etc/mopidy/mopidy.conf spotify username $spotuser
           crudini --set /etc/mopidy/mopidy.conf spotify password $spotpass
@@ -303,7 +303,7 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
     fi
 
 ## imdb url
-    if [ \$imdb != '' ]
+    if [ \"\$imdb\" != '' ]
         then
           crudini --set /opt/CouchPotato/settings.conf imdb automation_urls $imdb
     else
@@ -311,7 +311,7 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
     fi
 
 ## comicvine
-    if [ \$comicvine != '' ]
+    if [ \"\$comicvine\" != '' ]
         then
           crudini --set /opt/Mylar/config.ini General comicvine_api $comicvine
     else
@@ -341,13 +341,13 @@ htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 
 ## network
 nwadapter=$(ifconfig -a | sed -n 's/^\([^ ]\+\).*/\\1/p' | grep -Fvx -e lo -e dummy0)
-    if [ \$networkconfig != 'dhcp' ]
+    if [ \"\$networkconfig\" != 'dhcp' ]
         then
 cat > /etc/network/interfaces<<EOF
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
 
-source /etc/network/interfaces.d/\*
+source /etc/network/interfaces.d/*
 
 # The loopback network interface
 auto lo \$nwadapter
@@ -365,7 +365,7 @@ cat > /etc/network/interfaces<<EOF
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
 
-source /etc/network/interfaces.d/\*
+source /etc/network/interfaces.d/*
 
 # The loopback network interface
 auto lo \$nwadapter
@@ -378,7 +378,7 @@ EOF
     fi
 
 ## letsencrypt
-    if [ \$letsencrypt == 'on' ]
+    if [ \"\$letsencrypt\" == 'on' ]
         then
           rm -rf /etc/letsencrypt/
           sed -i 's/^email.*/email = $email/' /opt/letsencrypt/cli.ini
