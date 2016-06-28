@@ -170,7 +170,7 @@ sed -i 's/^  <ApiKey>.*/  <ApiKey>'\$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/
 plexreqapi=$(curl -s -X GET --header 'Accept: application/json' 'http://localhost:3579/request/api/apikey?username=openflixr&password=openflixr' | cut -c10-41)
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": "\$couchapi\",
+  \"ApiKey\": \"$couchapi\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
   \"Port\": 5050,
@@ -196,7 +196,7 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
     if [ \"\$usenetpassword\" != '' ]
         then
           service sabnzbdplus start
-          sleep 3
+          sleep 10
           curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&enable=1&apikey=\$sabapi'
           curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&ssl=$usenetssl&apikey=\$sabapi'
           curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&displayname=$usenetdescription&apikey=\$sabapi'
@@ -409,40 +409,3 @@ fclose($file);
 exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
 
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>OpenFLIXR Setup - Configuring System</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/stylish-portfolio.css" rel="stylesheet">
-    <link href="css/gsdk-base.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
-<body style="background-color: black";>
-
-<!--<div class="embed-responsive embed-responsive-16by9">
-<iframe class="embed-responsive-item" src="/log/"></iframe>-->
-
-<h1>Please Wait</h1>
-
-</div>
-
-</body>
-</html>
