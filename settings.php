@@ -170,21 +170,21 @@ sed -i 's/^  <ApiKey>.*/  <ApiKey>'\$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/
 plexreqapi=$(curl -s -X GET --header 'Accept: application/json' 'http://localhost:3579/request/api/apikey?username=openflixr&password=openflixr' | cut -c10-41)
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"\$couchapi\",
+  \"ApiKey\": "$couchapi",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
   \"Port\": 5050,
   \"SubDir\": \"couchpotato\"
 }' 'http://localhost:3579/request/api/settings/couchpotato?apikey='\$plexreqapi''
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"\$headapi\",
+  \"ApiKey\": "$headapi",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
   \"Port\": 8181,
   \"SubDir\": \"headphones\"
 }' 'http://localhost:3579/request/api/settings/headphones?apikey='\$plexreqapi''
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"\$sickapi\",
+  \"ApiKey\": "$sickapi",
   \"qualityProfile\": \"default\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
@@ -196,6 +196,7 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
     if [ \"\$usenetpassword\" != '' ]
         then
           service sabnzbdplus start
+          sleep 3
           curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&enable=1&apikey=\$sabapi'
           curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&ssl=$usenetssl&apikey=\$sabapi'
           curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&displayname=$usenetdescription&apikey=\$sabapi'
@@ -217,7 +218,7 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
 #    fi
 
 ## tv shows downloader
-    if [ \"\$tvshowsdl\" == 'sickrage' ]
+    if [ \"\$tvshowdl\" == 'sickrage' ]
         then
           systemctl disable sonarr.service
           update-rc.d sickrage enable
@@ -274,10 +275,12 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
           crudini --set /opt/headphones/config.ini General hpuser $headphonesuser
           crudini --set /opt/headphones/config.ini General hppass $headphonespass
           crudini --set /opt/headphones/config.ini General headphones_indexer 1
+          crudini --set /opt/headphones/config.ini General mirror headphones
     else
           crudini --set /opt/headphones/config.ini General hpuser
           crudini --set /opt/headphones/config.ini General hppass
           crudini --set /opt/headphones/config.ini General headphones_indexer 0
+          crudini --set /opt/headphones/config.ini General mirror musicbrainz.org
     fi
 
 ## anidb
@@ -306,8 +309,10 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
     if [ \"\$imdb\" != '' ]
         then
           crudini --set /opt/CouchPotato/settings.conf imdb automation_urls $imdb
+          crudini --set /opt/CouchPotato/settings.conf imdb automation_urls_use 1
     else
           crudini --set /opt/CouchPotato/settings.conf imdb automation_urls
+          crudini --set /opt/CouchPotato/settings.conf imdb automation_urls_use 0
     fi
 
 ## comicvine
@@ -380,14 +385,15 @@ EOF
 ## letsencrypt
     if [ \"\$letsencrypt\" == 'on' ]
         then
+          sleep 5
           rm -rf /etc/letsencrypt/
+          bash /opt/openflixr/letsencrypt.sh
           sed -i 's/^email.*/email = $email/' /opt/letsencrypt/cli.ini
           sed -i 's/^domains.*/domains = $domainname, www.$domainname/' /opt/letsencrypt/cli.ini
           sed -i 's/^server_name.*/server_name openflixr $domainname www.$domainname;  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
           sed -i 's/^.*#donotremove_certificatepath/ssl_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_certificatepath/' /etc/nginx/sites-enabled/reverse
           sed -i 's/^.*#donotremove_certificatekeypath/ssl_certificate_key \/etc\/letsencrypt\/live\/$domainname\/privkey.pem; #donotremove_certificatekeypath/' /etc/nginx/sites-enabled/reverse
           sed -i 's/^.*#donotremove_trustedcertificatepath/ssl_trusted_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
-          bash /opt/openflixr/letsencrypt.sh
     else
           sed -i 's/^server_name.*/server_name openflixr;  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
           sed -i 's/^.*#donotremove_certificatepath/#ssl_certificate \/etc\/letsencrypt\/live\/example\/fullchain.pem; #donotremove_certificatepath/' /etc/nginx/sites-enabled/reverse
@@ -395,11 +401,12 @@ EOF
           sed -i 's/^.*#donotremove_trustedcertificatepath/#ssl_trusted_certificate \/etc\/letsencrypt\/live\/example\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
     fi
 
+systemctl --system daemon-reload
+
 reboot now");
 fclose($file);
 
 exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
-sleep(3);
 
 ?>
 
