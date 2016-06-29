@@ -34,7 +34,7 @@ echo "                            <form action=\"settings.php\" method=\"POST\" 
 echo "                                <div class=\"wizard-header\">\n";
 echo "                                    <h3>Configuring <b>System</b><br><br></h3>\n";
 echo "                                </div>\n";
-echo "                        <center><div class=\"countdown-styled\"></div></center>\n";
+echo "                        <br><br><br><center><div class=\"countdown-styled\"></div></center>\n";
 echo "                        </div>\n";
 echo "                    </div>\n";
 echo "                </div>\n";
@@ -54,9 +54,6 @@ echo "      $('.countdown-styled').countdown({\n";
 echo "        render: function(data) {\n";
 echo "          var el = $(this.el);\n";
 echo "          el.empty()\n";
-echo "            .append(\"<div>\" + this.leadingZeros(data.years, 4) + \" <span>years</span></div>\")\n";
-echo "            .append(\"<div>\" + this.leadingZeros(data.days, 3) + \" <span>days</span></div>\")\n";
-echo "            .append(\"<div>\" + this.leadingZeros(data.hours, 2) + \" <span>hrs</span></div>\")\n";
 echo "            .append(\"<div>\" + this.leadingZeros(data.min, 2) + \" <span>min</span></div>\")\n";
 echo "            .append(\"<div>\" + this.leadingZeros(data.sec, 2) + \" <span>sec</span></div>\");\n";
 echo "        }\n";
