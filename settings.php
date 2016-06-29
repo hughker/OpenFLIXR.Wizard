@@ -40,7 +40,7 @@ echo "                                <div class=\"wizard-header\">\n";
 echo "                                    <h3>Configuring <b>System</b><br><br></h3>\n";
 echo "                                </div>\n";
 echo "                        <br><br><br><center><div class=\"countdown-styled\"></div></center>\n";
-echo "<BR><center><div><h5 class=\"info-text\"><a href=\"/htpc/\" style=\"text-decoration:none\">When timer reaches ZERO, click here</a></h4></div></center>\n";
+echo "<BR><center><div><h4 class=\"info-text\"><a href=\"/htpc/\" style=\"text-decoration:none\">When timer reaches ZERO, click here</a></h4></div></center>\n";
 echo "                        </div>\n";
 echo "                    </div>\n";
 echo "                </div>\n";
@@ -263,21 +263,21 @@ sed -i 's/^  <ApiKey>.*/  <ApiKey>'\$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/
 plexreqapi=$(curl -s -X GET --header 'Accept: application/json' 'http://localhost:3579/request/api/apikey?username=openflixr&password=openflixr' | cut -c10-41)
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"$couchapi\",
+  \"ApiKey\": \"\$couchapi\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
   \"Port\": 5050,
   \"SubDir\": \"couchpotato\"
 }' 'http://localhost:3579/request/api/settings/couchpotato?apikey='\$plexreqapi''
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"$headapi\",
+  \"ApiKey\": \"\$headapi\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
   \"Port\": 8181,
   \"SubDir\": \"headphones\"
 }' 'http://localhost:3579/request/api/settings/headphones?apikey='\$plexreqapi''
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"$sickapi\",
+  \"ApiKey\": \"\$sickapi\",
   \"qualityProfile\": \"default\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
