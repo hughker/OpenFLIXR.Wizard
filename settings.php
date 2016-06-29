@@ -448,8 +448,23 @@ htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 
 ## network
 nwadapter=$(ifconfig -a | sed -n 's/^\([^ ]\+\).*/\\1/p' | grep -Fvx -e lo -e dummy0)
-    if [ \"\$networkconfig\" != 'dhcp' ]
+    if [ \"\$networkconfig\" == 'dhcp' ]
         then
+cat > /etc/network/interfaces<<EOF
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo \$nwadapter
+iface lo inet loopback
+
+# The primary network interface
+iface \$nwadapter inet dhcp
+dns-nameservers 8.8.8.8 8.8.4.4
+EOF
+    else
 cat > /etc/network/interfaces<<EOF
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
@@ -466,21 +481,6 @@ address $ip
 netmask $subnet
 gateway $gateway
 dns-nameservers $dns
-EOF
-    else
-cat > /etc/network/interfaces<<EOF
-# This file describes the network interfaces available on your system
-# and how to activate them. For more information, see interfaces(5).
-
-source /etc/network/interfaces.d/*
-
-# The loopback network interface
-auto lo \$nwadapter
-iface lo inet loopback
-
-# The primary network interface
-iface \$nwadapter inet dhcp
-dns-nameservers 8.8.8.8 8.8.4.4
 EOF
     fi
 
