@@ -17,6 +17,7 @@ echo "<script type=\"text/javascript\">\n";
 echo "    window.onbeforeunload = function() {\n";
 echo "        return \"Do not refresh this page! It will leave OpenFLIXR in an unusable state!\";\n";
 echo "    }\n";
+echo "</script>\n";
 echo "\n";
 echo "    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->\n";
 echo "    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->\n";
