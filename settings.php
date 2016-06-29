@@ -1,4 +1,7 @@
 <?php
+if (!isset($_POST['password'])) {
+  die();
+}
 echo "<!DOCTYPE html>\n";
 echo "<html lang=\"en\">\n";
 echo "\n";
@@ -223,6 +226,10 @@ echo \"Mylar \$mylapi\" >>/opt/openflixr/api.keys
 echo \"SABnzbd \$sabapi\" >>/opt/openflixr/api.keys
 echo \"Jackett \$jackapi\" >>/opt/openflixr/api.keys
 echo \"Sonarr \$sonapi\" >>/opt/openflixr/api.keys
+
+$couchid = md5(uniqid());
+echo $couchid
+
 
 ## htpcmanager
 cd /opt/HTPCManager/userdata
@@ -476,7 +483,6 @@ EOF
 ## letsencrypt
     if [ \"\$letsencrypt\" == 'on' ]
         then
-          sleep 15
           rm -rf /etc/letsencrypt/
           rm -rf /var/log/letsencrypt/
           bash /opt/openflixr/letsencrypt.sh
