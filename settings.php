@@ -1,4 +1,58 @@
 <?php
+echo "<!DOCTYPE html>\n";
+echo "<html lang=\"en\">\n";
+echo "\n";
+echo "<head>\n";
+echo "    <meta charset=\"utf-8\">\n";
+echo "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
+echo "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n";
+echo "    <meta name=\"description\" content=\"OpenFLIXR Setup\">\n";
+echo "    <meta name=\"author\" content=\"OpenFLIXR\">\n";
+echo "    <title>OpenFLIXR Setup</title>\n";
+echo "    <link href=\"css/bootstrap.min.css\" rel=\"stylesheet\">\n";
+echo "    <link href=\"css/stylish-portfolio.css\" rel=\"stylesheet\">\n";
+echo "    <link href=\"css/gsdk-base.css\" rel=\"stylesheet\" />\n";
+echo "    <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css\">\n";
+echo "\n";
+echo "    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->\n";
+echo "    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->\n";
+echo "    <!--[if lt IE 9]>\n";
+echo "        <script src=\"https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js\"></script>\n";
+echo "        <script src=\"https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js\"></script>\n";
+echo "    <![endif]-->\n";
+echo "\n";
+echo "<script src=\"js/TimeCircles.js\"></script>\n";
+echo "<link href=\"css/TimeCircles.css\" rel=\"stylesheet\">\n";
+echo "</head>\n";
+echo "\n";
+echo "<body>\n";
+echo "    <div class=\"image-container set-full-height\" style=\"background-image: url(img/wizard.jpg);\">\n";
+echo "        <div class=\"container\">\n";
+echo "            <div class=\"row\">\n";
+echo "                <div class=\"col-sm-10 col-sm-offset-1\">\n";
+echo "                    <div class=\"wizard-container\">\n";
+echo "                        <div class=\"card wizard-card ct-wizard-azzure\" id=\"wizard\">\n";
+echo "                            <form action=\"settings.php\" method=\"POST\" id=\"registration-form\">\n";
+echo "                                <div class=\"wizard-header\">\n";
+echo "                                    <h3>OpenFLIXR <b>Setup</b><br><br></h3>\n";
+echo "                                </div>\n";
+echo "                        <div class=\"example\" data-timer=\"900\"></div>\n";
+echo "                        </div>\n";
+echo "                    </div>\n";
+echo "                </div>\n";
+echo "            </div>\n";
+echo "        </div>\n";
+echo "    </div>\n";
+echo "</body>\n";
+echo "<script src=\"js/jquery-1.10.2.js\" type=\"text/javascript\"></script>\n";
+echo "<script src=\"js/bootstrap.min.js\" type=\"text/javascript\"></script>\n";
+echo "<script src=\"js/jquery.bootstrap.wizard.js\" type=\"text/javascript\"></script>\n";
+echo "<script src=\"js/jquery.validate.min.js\"></script>\n";
+echo "<script src=\"js/wizard.js\"></script>\n";
+echo "<script src=\"js/custom.js\"></script>\n";
+echo "\n";
+echo "</html>\n";
+
 $password = $_POST['password'];
 $networkconfig = $_POST['networkconfig'];
 $ip = $_POST['ip'];
@@ -342,8 +396,6 @@ htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 # sleep 5
 # mysql mysql -e \"UPDATE user SET Password=PASSWORD('$password') WHERE User='root';FLUSH PRIVILEGES;\"
 
-#bash /opt/openflixr/updatewkly.sh
-
 ## network
 nwadapter=$(ifconfig -a | sed -n 's/^\([^ ]\+\).*/\\1/p' | grep -Fvx -e lo -e dummy0)
     if [ \"\$networkconfig\" != 'dhcp' ]
@@ -387,13 +439,20 @@ EOF
         then
           sleep 15
           rm -rf /etc/letsencrypt/
+          rm -rf /var/log/letsencrypt/
           bash /opt/openflixr/letsencrypt.sh
-          sed -i 's/^email.*/email = $email/' /opt/letsencrypt/cli.ini
-          sed -i 's/^domains.*/domains = $domainname, www.$domainname/' /opt/letsencrypt/cli.ini
-          sed -i 's/^server_name.*/server_name openflixr $domainname www.$domainname;  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
-          sed -i 's/^.*#donotremove_certificatepath/ssl_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_certificatepath/' /etc/nginx/sites-enabled/reverse
-          sed -i 's/^.*#donotremove_certificatekeypath/ssl_certificate_key \/etc\/letsencrypt\/live\/$domainname\/privkey.pem; #donotremove_certificatekeypath/' /etc/nginx/sites-enabled/reverse
-          sed -i 's/^.*#donotremove_trustedcertificatepath/ssl_trusted_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
+          failed=$(cat /var/log/letsencrypt/letsencrypt.log | grep "Failed authorization procedure")
+            if [ \"\$failed\" == '' ]
+              then
+                sed -i 's/^email.*/email = $email/' /opt/letsencrypt/cli.ini
+                sed -i 's/^domains.*/domains = $domainname, www.$domainname/' /opt/letsencrypt/cli.ini
+                sed -i 's/^server_name.*/server_name openflixr $domainname www.$domainname;  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
+                sed -i 's/^.*#donotremove_certificatepath/ssl_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_certificatepath/' /etc/nginx/sites-enabled/reverse
+                sed -i 's/^.*#donotremove_certificatekeypath/ssl_certificate_key \/etc\/letsencrypt\/live\/$domainname\/privkey.pem; #donotremove_certificatekeypath/' /etc/nginx/sites-enabled/reverse
+                sed -i 's/^.*#donotremove_trustedcertificatepath/ssl_trusted_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
+            else
+                echo "Failed authorization procedure"
+            fi
     else
           sed -i 's/^server_name.*/server_name openflixr;  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
           sed -i 's/^.*#donotremove_certificatepath/#ssl_certificate \/etc\/letsencrypt\/live\/example\/fullchain.pem; #donotremove_certificatepath/' /etc/nginx/sites-enabled/reverse
@@ -402,10 +461,10 @@ EOF
     fi
 
 systemctl --system daemon-reload
-
+bash /opt/openflixr/updatewkly.sh
 reboot now");
 fclose($file);
 
-exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
+# exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
 
 ?>
