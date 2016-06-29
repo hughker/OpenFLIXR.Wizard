@@ -17,6 +17,18 @@ echo "<script type=\"text/javascript\">\n";
 echo "    window.onbeforeunload = function() {\n";
 echo "        return \"Do not refresh this page! It will leave OpenFLIXR in an unusable state!\";\n";
 echo "    }\n";
+echo "</script>\n";
+echo "    <style>\n";
+echo "        #completed {\n";
+echo "  display: block;\n";
+echo "  padding-top: 3px;\n";
+echo "  font-size: 12px;\n";
+echo "  font-weight: normal;\n";
+echo "  text-transform: uppercase;\n";
+echo "  text-align: left;\n";
+echo "        }\n";
+echo "    </style>\n";
+echo "\n";
 echo "    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->\n";
 echo "    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->\n";
 echo "    <!--[if lt IE 9]>\n";
@@ -38,6 +50,7 @@ echo "                                <div class=\"wizard-header\">\n";
 echo "                                    <h3>Configuring <b>System</b><br><br></h3>\n";
 echo "                                </div>\n";
 echo "                        <br><br><br><center><div class=\"countdown-styled\"></div></center>\n";
+echo "<BR><center><div id=\"completed\"><a href=\"/htpc/\">Continue to your OpenFLIXR</a></div></center>\n";
 echo "                        </div>\n";
 echo "                    </div>\n";
 echo "                </div>\n";
@@ -88,6 +101,13 @@ echo "\n";
 echo "    });</script>\n";
 echo "\n";
 echo "</html>\n";
+echo "<script>\n";
+echo "    function showdiv() {\n";
+echo "        setTimeout(function () {\n";
+echo "            document.getElementById(\"completed\").style.visibility = \"visible\";\n";
+echo "        }, 5000);\n";
+echo "    }\n";
+echo "</script>\n";
 
 $password = $_POST['password'];
 $networkconfig = $_POST['networkconfig'];
@@ -260,21 +280,21 @@ sed -i 's/^  <ApiKey>.*/  <ApiKey>'\$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/
 plexreqapi=$(curl -s -X GET --header 'Accept: application/json' 'http://localhost:3579/request/api/apikey?username=openflixr&password=openflixr' | cut -c10-41)
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"\$couchapi\",
+  \"ApiKey\": \"$couchapi\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
   \"Port\": 5050,
   \"SubDir\": \"couchpotato\"
 }' 'http://localhost:3579/request/api/settings/couchpotato?apikey='\$plexreqapi''
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"\$headapi\",
+  \"ApiKey\": \"$headapi\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
   \"Port\": 8181,
   \"SubDir\": \"headphones\"
 }' 'http://localhost:3579/request/api/settings/headphones?apikey='\$plexreqapi''
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"\$sickapi\",
+  \"ApiKey\": \"$sickapi\",
   \"qualityProfile\": \"default\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
