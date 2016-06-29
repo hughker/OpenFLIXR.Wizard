@@ -40,7 +40,7 @@ echo "                                <div class=\"wizard-header\">\n";
 echo "                                    <h3>Configuring <b>System</b><br><br></h3>\n";
 echo "                                </div>\n";
 echo "                        <br><br><br><center><div class=\"countdown-styled\"></div></center>\n";
-echo "<BR><center><div><h4 class=\"info-text\"><a href=\"/htpc/\">When timer reaches ZERO, continue to your OpenFLIXR</a></h4></div></center>\n";
+echo "<BR><center><div><h5 class=\"info-text\"><a href=\"/htpc/\" style=\"text-decoration:none\">When timer reaches ZERO, click here</a></h4></div></center>\n";
 echo "                        </div>\n";
 echo "                    </div>\n";
 echo "                </div>\n";
