@@ -40,7 +40,7 @@ echo "                    <div class=\"wizard-container\">\n";
 echo "                        <div class=\"card wizard-card ct-wizard-azzure\" id=\"wizard\">\n";
 echo "                            <form action=\"settings.php\" method=\"POST\" id=\"registration-form\">\n";
 echo "                                <div class=\"wizard-header\">\n";
-echo "                                    <h3>Configuring <b>System</b><br><br></h3>\n";
+echo "                                    <h3>Configuring <b>OpenFLIXR</b><br><br></h3>\n";
 echo "                                </div>\n";
 echo "                        <br><br><br><center><div class=\"countdown-styled\"></div></center>\n";
 echo "<BR><center><div><h4 class=\"info-text\"><a href=\"/htpc/\" style=\"text-decoration:none\">When timer reaches ZERO, click here</a></h4></div></center>\n";
@@ -205,7 +205,6 @@ service couchpotato stop
 service headphones stop
 service htpcmanager stop
 service mylar stop
-service sabnzbdplus stop
 service sickrage stop
 service jackett stop
 service sonarr stop
@@ -226,10 +225,6 @@ echo \"Mylar \$mylapi\" >>/opt/openflixr/api.keys
 echo \"SABnzbd \$sabapi\" >>/opt/openflixr/api.keys
 echo \"Jackett \$jackapi\" >>/opt/openflixr/api.keys
 echo \"Sonarr \$sonapi\" >>/opt/openflixr/api.keys
-
-$couchid = md5(uniqid());
-echo $couchid
-
 
 ## htpcmanager
 cd /opt/HTPCManager/userdata
@@ -256,9 +251,6 @@ crudini --set /opt/headphones/config.ini SABnzbd sab_apikey \$sabapi
 crudini --set /opt/Mylar/config.ini General api_key \$mylapi
 crudini --set /opt/Mylar/config.ini SABnzbd sab_apikey \$sabapi
 
-## sabnzbd
-sed -i 's/^api_key.*/api_key = '\$sabapi'/' /home/openflixr/.sabnzbd/sabnzbd.ini
-
 ## jackett
 # changing /root/.config/Jackett/ServerConfig.json results in resetting to default values...
 #sed -i 's/^  \"APIKey\":.*/  \"APIKey\": = '\$jackapi'/' /root/.config/Jackett/ServerConfig.json
@@ -270,21 +262,21 @@ sed -i 's/^  <ApiKey>.*/  <ApiKey>'\$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/
 plexreqapi=$(curl -s -X GET --header 'Accept: application/json' 'http://localhost:3579/request/api/apikey?username=openflixr&password=openflixr' | cut -c10-41)
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"\$couchapi\",
+  \"ApiKey\": \"\'$couchapi'\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
   \"Port\": 5050,
   \"SubDir\": \"couchpotato\"
 }' 'http://localhost:3579/request/api/settings/couchpotato?apikey='\$plexreqapi''
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"\$headapi\",
+  \"ApiKey\": \"\'$headapi'\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
   \"Port\": 8181,
   \"SubDir\": \"headphones\"
 }' 'http://localhost:3579/request/api/settings/headphones?apikey='\$plexreqapi''
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"\$sickapi\",
+  \"ApiKey\": \"\'$sickapi'\",
   \"qualityProfile\": \"default\",
   \"Enabled\": true,
   \"Ip\": \"localhost\",
@@ -295,18 +287,30 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
 ## usenet
     if [ \"\$usenetpassword\" != '' ]
         then
+          service sabnzbdplus stop
+          sleep 5
+          sed -i 's/^api_key.*/api_key = '1234567890'/' /home/openflixr/.sabnzbd/sabnzbd.ini
           service sabnzbdplus start
-          sleep 10
-          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&enable=1&apikey=\$sabapi'
-          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&ssl=$usenetssl&apikey=\$sabapi'
-          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&displayname=$usenetdescription&apikey=\$sabapi'
-          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&username=$usenetusername&apikey=\$sabapi'
-          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&password=$usenetpassword&apikey=\$sabapi'
-          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&host=$usenetservername&apikey=\$sabapi'
-          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&port=$usenetport&apikey=\$sabapi'
-          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&connections=$usenetthreads&apikey=\$sabapi'
+          sleep 5
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&enable=1&apikey=1234567890'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&ssl=$usenetssl&apikey=1234567890'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&displayname=$usenetdescription&apikey=1234567890'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&username=$usenetusername&apikey=1234567890'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&password=$usenetpassword&apikey=1234567890'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&host=$usenetservername&apikey=1234567890'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&port=$usenetport&apikey=1234567890'
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&connections=$usenetthreads&apikey=1234567890'
+          service sabnzbdplus stop
+          sed -i 's/^api_key.*/api_key = '\$sabapi'/' /home/openflixr/.sabnzbd/sabnzbd.ini
     else
-          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&enable=0&apikey=\$sabapi'
+          service sabnzbdplus stop
+          sleep 5
+          sed -i 's/^api_key.*/api_key = '1234567890'/' /home/openflixr/.sabnzbd/sabnzbd.ini
+          service sabnzbdplus start
+          sleep 5
+          curl -s 'http://localhost:8080/api?mode=set_config&section=servers&keyword=OpenFLIXR_Usenet_Server&output=xml&enable=0&apikey=1234567890'
+          service sabnzbdplus stop
+          sed -i 's/^api_key.*/api_key = '\$sabapi'/' /home/openflixr/.sabnzbd/sabnzbd.ini
     fi
 
 ## newznab
