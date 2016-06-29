@@ -38,7 +38,6 @@ echo "                                <div class=\"wizard-header\">\n";
 echo "                                    <h3>Configuring <b>System</b><br><br></h3>\n";
 echo "                                </div>\n";
 echo "                        <br><br><br><center><div class=\"countdown-styled\"></div></center>\n";
-echo "                        <div><h4 class=\"info-text\">When timer reaches ZERO, click <a href=\"/htpc\">here</a> to continue</h4></div>\n";
 echo "                        </div>\n";
 echo "                    </div>\n";
 echo "                </div>\n";
