@@ -76,6 +76,7 @@ echo "\n";
 echo "      $('.countdown-callback').countdown({\n";
 echo "        date: +(new Date) + 900000,\n";
 echo "        render: function(data) {\n";
+echo "          $(this.el).text(this.leadingZeros(data.min, 2) + \" min\");\n";
 echo "          $(this.el).text(this.leadingZeros(data.sec, 2) + \" sec\");\n";
 echo "        },\n";
 echo "        onEnd: function() {\n";
