@@ -34,7 +34,7 @@ echo "                    <div class=\"wizard-container\">\n";
 echo "                        <div class=\"card wizard-card ct-wizard-azzure\" id=\"wizard\">\n";
 echo "                            <form action=\"settings.php\" method=\"POST\" id=\"registration-form\">\n";
 echo "                                <div class=\"wizard-header\">\n";
-echo "                                    <h3>OpenFLIXR <b>Setup</b><br><br></h3>\n";
+echo "                                    <h3>Configuring <b>System</b><br><br></h3>\n";
 echo "                                </div>\n";
 echo "                        <div class=\"example\" data-timer=\"900\"></div>\n";
 echo "                        </div>\n";
@@ -441,7 +441,7 @@ EOF
           rm -rf /etc/letsencrypt/
           rm -rf /var/log/letsencrypt/
           bash /opt/openflixr/letsencrypt.sh
-          failed=$(cat /var/log/letsencrypt/letsencrypt.log | grep "Failed authorization procedure")
+          failed=$(cat /var/log/letsencrypt/letsencrypt.log | grep \"Failed authorization procedure\")
             if [ \"\$failed\" == '' ]
               then
                 sed -i 's/^email.*/email = $email/' /opt/letsencrypt/cli.ini
@@ -451,7 +451,7 @@ EOF
                 sed -i 's/^.*#donotremove_certificatekeypath/ssl_certificate_key \/etc\/letsencrypt\/live\/$domainname\/privkey.pem; #donotremove_certificatekeypath/' /etc/nginx/sites-enabled/reverse
                 sed -i 's/^.*#donotremove_trustedcertificatepath/ssl_trusted_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
             else
-                echo "Failed authorization procedure"
+                echo \"Failed authorization procedure\"
             fi
     else
           sed -i 's/^server_name.*/server_name openflixr;  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
