@@ -241,3 +241,17 @@ hr.small {
 footer {
     padding: 100px 0;
 }
+
+.countdown-callback{
+  font-size: 20px;
+  background: #27ae60;
+  padding: 0.5em 0.7em;
+  color: #ecf0f1;
+  margin-bottom: 50px;
+  cursor: pointer;
+  -webkit-transition: background 0.5s ease-out;
+  transition: background 0.5s ease-out;
+}
+.countdown-callback.ended{
+  background: #c0392b;
+}
