@@ -34,7 +34,7 @@ echo "                            <form action=\"settings.php\" method=\"POST\" 
 echo "                                <div class=\"wizard-header\">\n";
 echo "                                    <h3>Configuring <b>System</b><br><br></h3>\n";
 echo "                                </div>\n";
-echo "                        <div class=\"countdown-callback\"></div>\n"; 
+echo "                        <center><div class=\"countdown-callback\"></div></center>\n"; 
 echo "                        </div>\n";
 echo "                    </div>\n";
 echo "                </div>\n";
