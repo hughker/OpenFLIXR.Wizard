@@ -51,6 +51,7 @@ echo "<script src=\"js/custom.js\"></script>\n";
 echo "    <script src=\"js/jquery.countdown.js\"></script>\n";
 echo "<script type=\"text/javascript\">    $(function() {\n";
 echo "      $('.countdown-styled').countdown({\n";
+echo "        date: \"June 7, 2087 15:03:25\",\n";
 echo "        render: function(data) {\n";
 echo "          var el = $(this.el);\n";
 echo "          el.empty()\n";
