@@ -23,7 +23,7 @@
 </head>
 
 <body>
-    <div class="image-container set-full-height" style="background-image: url(img/wizard.jpg);">
+    <div class="image-container set-full-height" style="background-color: #4c4c4c;">
         <div class="container">
             <div class="row">
                 <div class="col-sm-10 col-sm-offset-1">
@@ -250,14 +250,14 @@
                                      <i id="fac_57324bf4abf31" class="fa fa-check-square-o"></i>
                                      Register domain name</span>
                                                             <br>
-                                                            <span style="color: #808080;"><style>
+                                                            <span style="color: #808080;" rel="tooltip" title="Both records should point to your public IP address, www. and without. I.e. www.example.com and example.com"><style>
                                      #fac_57324bf4aca8a {
                                      color: #808080;            }
                                      #fac_57324bf4aca8a:hover {
                                      }
                                      </style>
                                      <i id="fac_57324bf4aca8a" class="fa fa-check-square-o"></i>
-                                     Edit / add&nbsp;<a href="https://support.google.com/a/answer/2576578" target="_blank">A record(s)</a> and point them to your public IP address</span>
+                                     Edit / add&nbsp;<a href="https://support.google.com/a/answer/2576578" target="_blank">A records</a> and point <b>both</b> to your public IP address</span>
                                                             <br>
                                                             <span style="color: #808080;"><style>
                                      #fac_57324bf4ad906 {
@@ -449,18 +449,6 @@
 
                                             <div class="col-md-4">
                                                 <br>
-                                                <label class="col-md-offset-2">Syncthing</label>
-                                                <div class="input-group col-md-8 col-md-offset-2">
-                                                    <span style="color:#808080" class="input-group-addon"><i class="fa fa-refresh" aria-hidden="true"></i></span>
-                                                    <select name="syncthing" id="syncthing" class="form-control">
-                                                        <option value="enabled" selected>Enabled</option>
-                                                        <option value="disabled">Disabled</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <br>
                                                 <label class="col-md-offset-2">Home-Assistant</label>
                                                 <div class="input-group col-md-8 col-md-offset-2">
                                                     <span style="color:#808080" class="input-group-addon"><i class="fa fa-home" aria-hidden="true"></i></span>
@@ -600,6 +588,7 @@
                                         <div class="row">
                                             <div class="col-sm-10 col-sm-offset-1">
                                                 <p><span style="color: #808080;">Tight integration with <a href="https://plex.tv" target="_blank">Plex</a> makes OpenFLIXR even more powerful. For optimum performance, you should configure the following applications with your Plex account. Click buttons to go directly to those settings.</span></p>
+                                                <p><span style="color: #808080;">Use the old password to login, the new password is effective when OpenFLIXR setup has been completed.</span></p>
                                                 <br>
                                                 <center>
                                                     <a style="width: 35%;" href="/couchpotato/settings/notifications/" target="_blank" class="btn btn-block btn-sm btn-info btn-fill">CouchPotato</a>

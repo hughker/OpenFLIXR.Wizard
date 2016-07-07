@@ -117,7 +117,6 @@ $newznabapi = $_POST['newznabapi'];
 $tvshowdl = $_POST['tvshowdl'];
 $nzbdl = $_POST['nzbdl'];
 $mopidy = $_POST['mopidy'];
-$syncthing = $_POST['syncthing'];
 $hass = $_POST['hass'];
 $ntopng = $_POST['ntopng'];
 $headphonesuser = $_POST['headphonesuser'];
@@ -148,21 +147,22 @@ THISUSER=$(whoami)
 ## report hypervisor
 hypervisor=$(sudo dmidecode -s system-product-name)
 version=$(cat /opt/openflixr/version)
+uniqueid=$(blkid | grep -oP 'UUID="\K[^"]+' | sha256sum | awk '{print $1}')
 
 if [ \"\$hypervisor\" == 'VirtualBox' ]
   then
-      curl -s \"http://www.openflixr.com/stats.php?vm=VirtualBox&version=\$version\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=VirtualBox&version=\$version\"&uniqueid=\$uniqueid\"
     elif [ \"\$hypervisor\" == 'Virtual Machine' ]
   then
-      curl -s \"http://www.openflixr.com/stats.php?vm=HyperV&version=\$version\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=HyperV&version=\$version\"&uniqueid=\$uniqueid\"
     elif [ \"\$hypervisor\" == 'Parallels Virtual Platform' ]
   then
-      curl -s \"http://www.openflixr.com/stats.php?vm=Parallels&version=\$version\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=Parallels&version=\$version\"&uniqueid=\$uniqueid\"
     elif [ \"\$hypervisor\" == 'VMware Virtual Platform' ]
   then
-      curl -s \"http://www.openflixr.com/stats.php?vm=VMware&version=\$version\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=VMware&version=\$version\"&uniqueid=\$uniqueid\"
     else
-      curl -s \"http://www.openflixr.com/stats.php?vm=Other&version=\$version\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=Other&version=\$version\"&uniqueid=\$uniqueid\"
 fi
 
 ## variables
@@ -185,10 +185,9 @@ usenetssl=$usenetssl
 newznabprovider='$newznabprovider'
 newznaburl=$newznaburl
 newznabapi='$newznabapi'
-tvshowsdl=$tvshowdl
+tvshowdl=$tvshowdl
 nzbdl=$nzbdl
 mopidy=$mopidy
-syncthing=$syncthing
 hass=$hass
 ntopng=$ntopng
 headphonesuser='$headphonesuser'
@@ -209,6 +208,7 @@ service sickrage stop
 service jackett stop
 service sonarr stop
 service mopidy stop
+service ntopng stop
 
 ## generate api keys
 couchapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
@@ -251,15 +251,17 @@ crudini --set /opt/headphones/config.ini SABnzbd sab_apikey \$sabapi
 crudini --set /opt/Mylar/config.ini General api_key \$mylapi
 crudini --set /opt/Mylar/config.ini SABnzbd sab_apikey \$sabapi
 
-## jackett
-# changing /root/.config/Jackett/ServerConfig.json results in resetting to default values...
-#sed -i 's/^  \"APIKey\":.*/  \"APIKey\": = '\$jackapi'/' /root/.config/Jackett/ServerConfig.json
-
 ## sonarr
 sed -i 's/^  <ApiKey>.*/  <ApiKey>'\$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/config.xml
 
+## plex
+cp /opt/config/monit/plex /etc/monit/conf.d/
+
 ## plexrequests
-plexreqapi=$(curl -s -X GET --header 'Accept: application/json' 'http://localhost:3579/request/api/apikey?username=openflixr&password=openflixr' | cut -c10-41)
+plexrqpassword=$(crudini --get /usr/share/nginx/html/setup/config.ini password password)
+if [ \"\$plexrqpassword\" == '' ] then plexrqpassword=openflixr fi
+
+plexreqapi=$(curl -s -X GET --header 'Accept: application/json' 'http://localhost:3579/request/api/apikey?username=openflixr&password=\$plexrqpassword' | cut -c10-41)
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"'\$couchapi'\",
@@ -283,6 +285,10 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
   \"Port\": 8081,
   \"SubDir\": \"sickrage\"
 }' 'http://localhost:3579/request/api/settings/sickrage?apikey='\$plexreqapi''
+curl -s -X PUT --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+  \"CurrentPassword\": \"openflixr\",
+  \"NewPassword\": \"'\$password'\"
+}' 'http://localhost:3579/request/api/credentials/0?apikey='\$plexreqapi''
 
 ## usenet
     if [ \"\$usenetpassword\" != '' ]
@@ -326,9 +332,17 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
         then
           systemctl disable sonarr.service
           update-rc.d sickrage enable
+          cp /opt/config/monit/sickrage /etc/monit/conf.d/
+          rm /etc/monit/conf.d/sonarr
+          sqlite3 database.db \"UPDATE setting SET val='on' where key='sickrage_enable';\"
+          sqlite3 database.db \"UPDATE setting SET val='0' where key='sonarr_enable';\"
         else
           systemctl enable sonarr.service
           update-rc.d sickrage disable
+          cp /opt/config/monit/sonarr /etc/monit/conf.d/
+          rm /etc/monit/conf.d/sickrage
+          sqlite3 database.db \"UPDATE setting SET val='0' where key='sickrage_enable';\"
+          sqlite3 database.db \"UPDATE setting SET val='on' where key='sonarr_enable';\"
     fi
 
 ## nzb downloader
@@ -336,41 +350,47 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
         then
           systemctl disable nzbget.service
           update-rc.d sabnzbdplus enable
+          cp /opt/config/monit/sabnzbd /etc/monit/conf.d/
+          rm /etc/monit/conf.d/nzbget
+          sqlite3 database.db \"UPDATE setting SET val='on' where key='sabnzbd_enable';\"
+          sqlite3 database.db \"UPDATE setting SET val='0' where key='nzbget_enable';\"
     else
           systemctl enable nzbget.service
           update-rc.d sabnzbdplus disable
+          cp /opt/config/monit/nzbget /etc/monit/conf.d/
+          rm /etc/monit/conf.d/sabnzbd
+          sqlite3 database.db \"UPDATE setting SET val='0' where key='sabnzbd_enable';\"
+          sqlite3 database.db \"UPDATE setting SET val='on' where key='nzbget_enable';\"
     fi
 
 ## mopidy
     if [ \"\$mopidy\" == 'enabled' ]
         then
           update-rc.d mopidy enable
+          cp /opt/config/monit/mopidy /etc/monit/conf.d/
     else
           update-rc.d mopidy disable
-    fi
-
-## syncthing
-    if [ \"\$syncthing\" == 'enabled' ]
-        then
-          systemctl enable syncthing.service
-    else
-          systemctl disable syncthing.service
+          rm /etc/monit/conf.d/mopidy
     fi
 
 ## home assistant
     if [ \"\$hass\" == 'enabled' ]
         then
           systemctl enable home-assistant.service
+          cp /opt/config/monit/hass /etc/monit/conf.d/
     else
           systemctl disable home-assistant.service
+          rm /etc/monit/conf.d/hass
     fi
 
 ## ntopng
     if [ \"\$ntopng\" == 'enabled' ]
         then
           update-rc.d ntopng enable
+          cp /opt/config/monit/ntopng /etc/monit/conf.d/
     else
           update-rc.d ntopng disable
+          rm /etc/monit/conf.d/ntopng
     fi
 
 ## headphones vip
@@ -431,20 +451,18 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
 #users / apikey + passwordhash
 #usersettings / id3 / otherprefs | sabnzbd api + password
 
-## syncthing
-#/opt/syncthing/config.xml
-#        <password></password>
-#        <apikey></apikey>
-
 ## passwords
 printf \"$password\\n$password\\n\" | sudo smbpasswd -a -s openflixr
 echo openflixr:'$password' | sudo chpasswd
 htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 
-## first need to check all places where mysql root password is set
-# mysqld_safe --skip-grant-tables >res 2>&1 &
-# sleep 5
-# mysql mysql -e \"UPDATE user SET Password=PASSWORD('$password') WHERE User='root';FLUSH PRIVILEGES;\"
+## MySQL
+mysqld_safe --skip-grant-tables >res 2>&1 &
+sleep 5
+mysql mysql -e \"UPDATE user SET Password=PASSWORD('$password') WHERE User='root';FLUSH PRIVILEGES;\"
+sed -i 's/^-F \"mysql*/-F \"mysql;localhost;ntopng;flows;root;$password\"/' /etc/ntopng/ntopng.conf
+sed -i 's/^define('PSM_DB_PASS'*/define('PSM_DB_PASS', '$password');/' /usr/share/nginx/html/phpservermonitor/config.php
+sed -i 's/^\$dbsettings['pass']*/\$dbsettings['pass'] = '$password';/' /var/www/spotweb/dbsettings.inc.php
 
 ## network
 nwadapter=$(ifconfig -a | sed -n 's/^\([^ ]\+\).*/\\1/p' | grep -Fvx -e lo -e dummy0)
@@ -487,20 +505,21 @@ EOF
 ## letsencrypt
     if [ \"\$letsencrypt\" == 'on' ]
         then
-          rm -rf /etc/letsencrypt/
           rm -rf /var/log/letsencrypt/
-          bash /opt/openflixr/letsencrypt.sh
-          failed=$(cat /var/log/letsencrypt/letsencrypt.log | grep \"Failed authorization procedure\")
-            if [ \"\$failed\" == '' ]
-              then
-                sed -i 's/^email.*/email = $email/' /opt/letsencrypt/cli.ini
-                sed -i 's/^domains.*/domains = $domainname, www.$domainname/' /opt/letsencrypt/cli.ini
+          sed -i 's/^email.*/email = $email/' /opt/letsencrypt/cli.ini
+          sed -i 's/^domains.*/domains = $domainname, www.$domainname/' /opt/letsencrypt/cli.ini
+          service nginx stop
+          sudo bash /opt/openflixr/letsencrypt.sh
+          failed1=$(cat /var/log/letsencrypt/letsencrypt.log | grep \"Failed authorization procedure\")
+          failed2=$(cat /var/log/letsencrypt/letsencrypt.log | grep \"is not a FQDN\")
+            if [ \"\$failed1\" == '' ] && [ \"\$failed2\" == '' ]
+            then
                 sed -i 's/^server_name.*/server_name openflixr $domainname www.$domainname;  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
                 sed -i 's/^.*#donotremove_certificatepath/ssl_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_certificatepath/' /etc/nginx/sites-enabled/reverse
                 sed -i 's/^.*#donotremove_certificatekeypath/ssl_certificate_key \/etc\/letsencrypt\/live\/$domainname\/privkey.pem; #donotremove_certificatekeypath/' /etc/nginx/sites-enabled/reverse
                 sed -i 's/^.*#donotremove_trustedcertificatepath/ssl_trusted_certificate \/etc\/letsencrypt\/live\/$domainname\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
             else
-                echo \"Failed authorization procedure\"
+                echo \"Failed authorization procedure or is not a FQDN\"
             fi
     else
           sed -i 's/^server_name.*/server_name openflixr;  #donotremove_domainname/' /etc/nginx/sites-enabled/reverse
@@ -512,6 +531,56 @@ EOF
 systemctl --system daemon-reload
 bash /opt/openflixr/updatewkly.sh
 reboot now");
+fclose($file);
+
+#write config.ini
+$file = fopen("config.ini","w");
+fwrite($file,"[network]
+networkconfig = $networkconfig
+ip = $ip
+subnet = $subnet
+gateway = $gateway
+dns = $dns
+
+[password]
+password = $password
+
+[access]
+letsencrypt = $letsencrypt
+domainname = $domainname
+email = $email
+
+[usenet]
+usenetdescription = $usenetdescription
+usenetservername = $usenetservername
+usenetusername = $usenetusername
+usenetpassword = $usenetpassword
+usenetport = $usenetport
+usenetthreads = $usenetthreads
+usenetssl = $usenetssl
+
+[newznab]
+newznabprovider = $newznabprovider
+newznaburl = $newznaburl
+newznabapi = $newznabapi
+
+[modules]
+tvshowdl = $tvshowdl
+nzbdl = $nzbdl
+mopidy = $mopidy
+hass = $hass
+ntopng = $ntopng
+
+[extras]
+headphonesuser = $headphonesuser
+headphonespass = $headphonespass
+anidbuser = $anidbuser
+anidbpass = $anidbpass
+spotuser = $spotuser
+spotpass = $spotpass
+imdb = $imdb
+comicvine = $comicvine
+");
 fclose($file);
 
 exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
