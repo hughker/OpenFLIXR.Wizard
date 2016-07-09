@@ -277,14 +277,6 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
   \"Port\": 8181,
   \"SubDir\": \"headphones\"
 }' 'http://localhost:3579/request/api/settings/headphones?apikey='\$plexreqapi''
-curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"ApiKey\": \"'\$sickapi'\",
-  \"qualityProfile\": \"default\",
-  \"Enabled\": true,
-  \"Ip\": \"localhost\",
-  \"Port\": 8081,
-  \"SubDir\": \"sickrage\"
-}' 'http://localhost:3579/request/api/settings/sickrage?apikey='\$plexreqapi''
 curl -s -X PUT --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"CurrentPassword\": \"openflixr\",
   \"NewPassword\": \"'\$password'\"
@@ -336,6 +328,36 @@ curl -s -X PUT --header 'Content-Type: application/json' --header 'Accept: appli
           rm /etc/monit/conf.d/sonarr
           sqlite3 database.db \"UPDATE setting SET val='on' where key='sickrage_enable';\"
           sqlite3 database.db \"UPDATE setting SET val='0' where key='sonarr_enable';\"
+
+curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+  \"ApiKey\": \"'\$sickapi'\",
+  \"qualityProfile\": \"default\",
+  \"Enabled\": false,
+  \"Ip\": \"localhost\",
+  \"Port\": 8081,
+  \"SubDir\": \"sickrage\"
+}' 'http://localhost:3579/request/api/settings/sickrage?apikey='\$plexreqapi''
+
+curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+  \"ApiKey\": \"'\$sonapi'\",
+  \"qualityProfile\": \"3\",
+  \"Enabled\": false,
+  \"Ip\": \"localhost\",
+  \"Port\": 7979,
+  \"seasonFolders\": true,
+  \"rootPath\": \"\/mnt\/series\",
+  \"SubDir\": \"sonarr\"
+}' 'http://localhost:3579/request/api/settings/sickrage?apikey='\$plexreqapi''
+
+curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+  \"ApiKey\": \"'\$sickapi'\",
+  \"qualityProfile\": \"default\",
+  \"Enabled\": true,
+  \"Ip\": \"localhost\",
+  \"Port\": 8081,
+  \"SubDir\": \"sickrage\"
+}' 'http://localhost:3579/request/api/settings/sickrage?apikey='\$plexreqapi''
+
         else
           systemctl enable sonarr.service
           update-rc.d sickrage disable
@@ -343,6 +365,38 @@ curl -s -X PUT --header 'Content-Type: application/json' --header 'Accept: appli
           rm /etc/monit/conf.d/sickrage
           sqlite3 database.db \"UPDATE setting SET val='0' where key='sickrage_enable';\"
           sqlite3 database.db \"UPDATE setting SET val='on' where key='sonarr_enable';\"
+
+curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+  \"ApiKey\": \"'\$sickapi'\",
+  \"qualityProfile\": \"default\",
+  \"Enabled\": false,
+  \"Ip\": \"localhost\",
+  \"Port\": 8081,
+  \"SubDir\": \"sickrage\"
+}' 'http://localhost:3579/request/api/settings/sickrage?apikey='\$plexreqapi''
+
+curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+  \"ApiKey\": \"'\$sonapi'\",
+  \"qualityProfile\": \"3\",
+  \"Enabled\": false,
+  \"Ip\": \"localhost\",
+  \"Port\": 7979,
+  \"seasonFolders\": true,
+  \"rootPath\": \"\/mnt\/series\",
+  \"SubDir\": \"sonarr\"
+}' 'http://localhost:3579/request/api/settings/sickrage?apikey='\$plexreqapi''
+
+curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+  \"ApiKey\": \"'\$sonapi'\",
+  \"qualityProfile\": \"3\",
+  \"Enabled\": true,
+  \"Ip\": \"localhost\",
+  \"Port\": 7979,
+  \"seasonFolders\": true,
+  \"rootPath\": \"\/mnt\/series\",
+  \"SubDir\": \"sonarr\"
+}' 'http://localhost:3579/request/api/settings/sickrage?apikey='\$plexreqapi''
+
     fi
 
 ## nzb downloader
