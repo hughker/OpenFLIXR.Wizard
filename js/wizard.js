@@ -108,7 +108,6 @@ $(document).ready(function() {
 });
 
 
-
 function validateFirstStep() {
 
     $(".wizard-card form").validate({

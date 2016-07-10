@@ -752,7 +752,7 @@ label{
 .wizard-card{
     min-height: 410px;
     background-color: #ffffff;
-    box-shadow: 0 0 35px rgba(0, 0, 0, 0.75), 0 0 1px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.75), 0 0 1px 1px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     padding: 10px 0;
 
