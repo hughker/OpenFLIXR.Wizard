@@ -147,22 +147,22 @@ THISUSER=$(whoami)
 ## report hypervisor
 hypervisor=$(sudo dmidecode -s system-product-name)
 version=$(cat /opt/openflixr/version)
-uniqueid=$(blkid | grep -oP 'UUID="\K[^"]+' | sha256sum | awk '{print $1}')
+## uniqueid=$(blkid | grep -oP 'UUID="\K[^"]+' | sha256sum | awk '{print $1}')
 
 if [ \"\$hypervisor\" == 'VirtualBox' ]
   then
-      curl -s \"http://www.openflixr.com/stats.php?vm=VirtualBox&version=\$version\"&uniqueid=\$uniqueid\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=VirtualBox&version=\$version\"
     elif [ \"\$hypervisor\" == 'Virtual Machine' ]
   then
-      curl -s \"http://www.openflixr.com/stats.php?vm=HyperV&version=\$version\"&uniqueid=\$uniqueid\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=HyperV&version=\$version\"
     elif [ \"\$hypervisor\" == 'Parallels Virtual Platform' ]
   then
-      curl -s \"http://www.openflixr.com/stats.php?vm=Parallels&version=\$version\"&uniqueid=\$uniqueid\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=Parallels&version=\$version\"
     elif [ \"\$hypervisor\" == 'VMware Virtual Platform' ]
   then
-      curl -s \"http://www.openflixr.com/stats.php?vm=VMware&version=\$version\"&uniqueid=\$uniqueid\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=VMware&version=\$version\"
     else
-      curl -s \"http://www.openflixr.com/stats.php?vm=Other&version=\$version\"&uniqueid=\$uniqueid\"
+      curl -s \"http://www.openflixr.com/stats.php?vm=Other&version=\$version\"
 fi
 
 ## variables
@@ -637,6 +637,6 @@ comicvine = $comicvine
 ");
 fclose($file);
 
-exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
+#exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
 
 ?>
