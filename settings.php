@@ -32,7 +32,7 @@ echo "\n";
 echo "</head>\n";
 echo "\n";
 echo "<body>\n";
-echo "    <div class=\"image-container set-full-height\" style=\"background-image: url(img/wizard.jpg);\">\n";
+echo "    <div class=\"image-container set-full-height\" style=\"background-color: #4c4c4c;;\">\n";
 echo "        <div class=\"container\">\n";
 echo "            <div class=\"row\">\n";
 echo "                <div class=\"col-sm-10 col-sm-offset-1\">\n";
@@ -147,7 +147,6 @@ THISUSER=$(whoami)
 ## report hypervisor
 hypervisor=$(sudo dmidecode -s system-product-name)
 version=$(cat /opt/openflixr/version)
-## uniqueid=$(blkid | grep -oP 'UUID="\K[^"]+' | sha256sum | awk '{print $1}')
 
 if [ \"\$hypervisor\" == 'VirtualBox' ]
   then
@@ -259,7 +258,10 @@ cp /opt/config/monit/plex /etc/monit/conf.d/
 
 ## plexrequests
 plexrqpassword=$(crudini --get /usr/share/nginx/html/setup/config.ini password password)
-if [ \"\$plexrqpassword\" == '' ] then plexrqpassword=openflixr fi
+if [ \"\$plexrqpassword\" == '' ]
+  then
+    plexrqpassword='openflixr'
+fi
 
 plexreqapi=$(curl -s -X GET --header 'Accept: application/json' 'http://localhost:3579/request/api/apikey?username=openflixr&password=\$plexrqpassword' | cut -c10-41)
 
@@ -278,7 +280,7 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
   \"SubDir\": \"headphones\"
 }' 'http://localhost:3579/request/api/settings/headphones?apikey='\$plexreqapi''
 curl -s -X PUT --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"CurrentPassword\": \"openflixr\",
+  \"CurrentPassword\": \"\$plexrqpassword\",
   \"NewPassword\": \"'\$password'\"
 }' 'http://localhost:3579/request/api/credentials/0?apikey='\$plexreqapi''
 
@@ -520,23 +522,8 @@ sed -i 's/^\$dbsettings['pass']*/\$dbsettings['pass'] = '$password';/' /var/www/
 
 ## network
 nwadapter=$(ifconfig -a | sed -n 's/^\([^ ]\+\).*/\\1/p' | grep -Fvx -e lo -e dummy0)
-    if [ \"\$networkconfig\" == 'dhcp' ]
-        then
-cat > /etc/network/interfaces<<EOF
-# This file describes the network interfaces available on your system
-# and how to activate them. For more information, see interfaces(5).
-
-source /etc/network/interfaces.d/*
-
-# The loopback network interface
-auto lo \$nwadapter
-iface lo inet loopback
-
-# The primary network interface
-iface \$nwadapter inet dhcp
-dns-nameservers 8.8.8.8 8.8.4.4
-EOF
-    else
+    if [ \"\$networkconfig\" == 'static' ]
+    then
 cat > /etc/network/interfaces<<EOF
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
@@ -554,6 +541,22 @@ netmask $subnet
 gateway $gateway
 dns-nameservers $dns
 EOF
+    else
+cat > /etc/network/interfaces<<EOF
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo \$nwadapter
+iface lo inet loopback
+
+# The primary network interface
+iface \$nwadapter inet dhcp
+dns-nameservers 8.8.8.8 8.8.4.4
+EOF
+
     fi
 
 ## letsencrypt
