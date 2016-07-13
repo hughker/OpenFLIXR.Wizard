@@ -198,6 +198,13 @@ spotpass='$spotpass'
 imdb=$imdb
 comicvine='$comicvine'
 
+oldpassword=$(crudini --get /usr/share/nginx/html/setup/config.ini password oldpassword)
+if [ \"\$oldpassword\" == '' ]
+  then
+    oldpassword='openflixr'
+fi
+
+
 ## stop services
 service couchpotato stop
 service headphones stop
@@ -208,6 +215,7 @@ service jackett stop
 service sonarr stop
 service mopidy stop
 service ntopng stop
+service mysql stop
 
 ## generate api keys
 couchapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
@@ -257,13 +265,7 @@ sed -i 's/^  <ApiKey>.*/  <ApiKey>'\$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/
 cp /opt/config/monit/plex /etc/monit/conf.d/
 
 ## plexrequests
-plexrqpassword=$(crudini --get /usr/share/nginx/html/setup/config.ini password password)
-if [ \"\$plexrqpassword\" == '' ]
-  then
-    plexrqpassword='openflixr'
-fi
-
-plexreqapi=$(curl -s -X GET --header 'Accept: application/json' 'http://localhost:3579/request/api/apikey?username=openflixr&password=\$plexrqpassword' | cut -c10-41)
+plexreqapi=$(curl -s -X GET --header 'Accept: application/json' 'http://localhost:3579/request/api/apikey?username=openflixr&password=\$oldpassword' | cut -c10-41)
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"'\$couchapi'\",
@@ -280,7 +282,7 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
   \"SubDir\": \"headphones\"
 }' 'http://localhost:3579/request/api/settings/headphones?apikey='\$plexreqapi''
 curl -s -X PUT --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"CurrentPassword\": \"\$plexrqpassword\",
+  \"CurrentPassword\": \"\$oldpassword\",
   \"NewPassword\": \"'\$password'\"
 }' 'http://localhost:3579/request/api/credentials/0?apikey='\$plexreqapi''
 
@@ -513,16 +515,15 @@ echo openflixr:'$password' | sudo chpasswd
 htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 
 ## MySQL
-mysqld_safe --skip-grant-tables >res 2>&1 &
-sleep 5
-mysql mysql -e \"UPDATE user SET Password=PASSWORD('$password') WHERE User='root';FLUSH PRIVILEGES;\"
+mysqld_safe --skip-grant-tables &
+mysql -e \"UPDATE mysql.user SET authentication_string = PASSWORD('$password') WHERE User = 'root' AND Host = 'localhost';FLUSH PRIVILEGES;\"
 sed -i 's/^-F \"mysql*/-F \"mysql;localhost;ntopng;flows;root;$password\"/' /etc/ntopng/ntopng.conf
 sed -i 's/^define('PSM_DB_PASS'*/define('PSM_DB_PASS', '$password');/' /usr/share/nginx/html/phpservermonitor/config.php
 sed -i 's/^\$dbsettings['pass']*/\$dbsettings['pass'] = '$password';/' /var/www/spotweb/dbsettings.inc.php
 
 ## network
 nwadapter=$(ifconfig -a | sed -n 's/^\([^ ]\+\).*/\\1/p' | grep -Fvx -e lo -e dummy0)
-    if [ \"\$networkconfig\" == 'static' ]
+    if [ \"\$ip\" != '' ]
     then
 cat > /etc/network/interfaces<<EOF
 # This file describes the network interfaces available on your system
@@ -585,61 +586,44 @@ EOF
           sed -i 's/^.*#donotremove_trustedcertificatepath/#ssl_trusted_certificate \/etc\/letsencrypt\/live\/example\/fullchain.pem; #donotremove_trustedcertificatepath/' /etc/nginx/sites-enabled/reverse
     fi
 
+crudini --set /usr/share/nginx/html/setup/config.ini network networkconfig $networkconfig
+crudini --set /usr/share/nginx/html/setup/config.ini network ip $ip
+crudini --set /usr/share/nginx/html/setup/config.ini network subnet $subnet
+crudini --set /usr/share/nginx/html/setup/config.ini network gateway $gateway
+crudini --set /usr/share/nginx/html/setup/config.ini network dns $dns
+crudini --set /usr/share/nginx/html/setup/config.ini password oldpassword $password
+crudini --set /usr/share/nginx/html/setup/config.ini access letsencrypt $letsencrypt
+crudini --set /usr/share/nginx/html/setup/config.ini access domainname $domainname
+crudini --set /usr/share/nginx/html/setup/config.ini access email $email
+crudini --set /usr/share/nginx/html/setup/config.ini usenet usenetdescription $usenetdescription
+crudini --set /usr/share/nginx/html/setup/config.ini usenet usenetservername $usenetservername
+crudini --set /usr/share/nginx/html/setup/config.ini usenet usenetusername $usenetusername
+crudini --set /usr/share/nginx/html/setup/config.ini usenet usenetpassword $usenetpassword
+crudini --set /usr/share/nginx/html/setup/config.ini usenet usenetport $usenetport
+crudini --set /usr/share/nginx/html/setup/config.ini usenet usenetthreads $usenetthreads
+crudini --set /usr/share/nginx/html/setup/config.ini usenet usenetssl $usenetssl
+crudini --set /usr/share/nginx/html/setup/config.ini newznab newznabprovider $newznabprovider
+crudini --set /usr/share/nginx/html/setup/config.ini newznab newznaburl $newznaburl
+crudini --set /usr/share/nginx/html/setup/config.ini newznab newznabapi $newznabapi
+crudini --set /usr/share/nginx/html/setup/config.ini modules tvshowdl $tvshowdl
+crudini --set /usr/share/nginx/html/setup/config.ini modules nzbdl $nzbdl
+crudini --set /usr/share/nginx/html/setup/config.ini modules mopidy $mopidy
+crudini --set /usr/share/nginx/html/setup/config.ini modules hass $hass
+crudini --set /usr/share/nginx/html/setup/config.ini modules ntopng $ntopng
+crudini --set /usr/share/nginx/html/setup/config.ini extras headphonesuser $headphonesuser
+crudini --set /usr/share/nginx/html/setup/config.ini extras headphonespass $headphonespass
+crudini --set /usr/share/nginx/html/setup/config.ini extras anidbuser $anidbuser
+crudini --set /usr/share/nginx/html/setup/config.ini extras anidbpass $anidbpass
+crudini --set /usr/share/nginx/html/setup/config.ini extras spotuser $spotuser
+crudini --set /usr/share/nginx/html/setup/config.ini extras spotpass $spotpass
+crudini --set /usr/share/nginx/html/setup/config.ini extras imdb $imdb
+crudini --set /usr/share/nginx/html/setup/config.ini extras comicvine $comicvine
+
 systemctl --system daemon-reload
-bash /opt/openflixr/updatewkly.sh
+# bash /opt/openflixr/updatewkly.sh
 reboot now");
 fclose($file);
-
-#write config.ini
-$file = fopen("config.ini","w");
-fwrite($file,"[network]
-networkconfig = $networkconfig
-ip = $ip
-subnet = $subnet
-gateway = $gateway
-dns = $dns
-
-[password]
-password = $password
-
-[access]
-letsencrypt = $letsencrypt
-domainname = $domainname
-email = $email
-
-[usenet]
-usenetdescription = $usenetdescription
-usenetservername = $usenetservername
-usenetusername = $usenetusername
-usenetpassword = $usenetpassword
-usenetport = $usenetport
-usenetthreads = $usenetthreads
-usenetssl = $usenetssl
-
-[newznab]
-newznabprovider = $newznabprovider
-newznaburl = $newznaburl
-newznabapi = $newznabapi
-
-[modules]
-tvshowdl = $tvshowdl
-nzbdl = $nzbdl
-mopidy = $mopidy
-hass = $hass
-ntopng = $ntopng
-
-[extras]
-headphonesuser = $headphonesuser
-headphonespass = $headphonespass
-anidbuser = $anidbuser
-anidbpass = $anidbpass
-spotuser = $spotuser
-spotpass = $spotpass
-imdb = $imdb
-comicvine = $comicvine
-");
-fclose($file);
-
+k
 #exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
 
 ?>
