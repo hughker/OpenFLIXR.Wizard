@@ -265,7 +265,7 @@ sed -i 's/^  <ApiKey>.*/  <ApiKey>'\$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/
 cp /opt/config/monit/plex /etc/monit/conf.d/
 
 ## plexrequests
-plexreqapi=$(curl -s -X GET --header 'Accept: application/json' 'http://localhost:3579/request/api/apikey?username=openflixr&password=\$oldpassword' | cut -c10-41)
+plexreqapi=$(curl -s -X GET --header 'Accept: application/json' 'http://localhost:3579/request/api/apikey?username=openflixr&password='\$oldpassword'' | cut -c10-41)
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"'\$couchapi'\",
