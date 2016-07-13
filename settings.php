@@ -623,7 +623,7 @@ systemctl --system daemon-reload
 # bash /opt/openflixr/updatewkly.sh
 reboot now");
 fclose($file);
-k
+
 #exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
 
 ?>
