@@ -282,7 +282,7 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
   \"SubDir\": \"headphones\"
 }' 'http://localhost:3579/request/api/settings/headphones?apikey='\$plexreqapi''
 curl -s -X PUT --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-  \"CurrentPassword\": \"\$oldpassword\",
+  \"CurrentPassword\": \"'\$oldpassword'\",
   \"NewPassword\": \"'\$password'\"
 }' 'http://localhost:3579/request/api/credentials/0?apikey='\$plexreqapi''
 
