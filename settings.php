@@ -215,6 +215,7 @@ service jackett stop
 service sonarr stop
 service mopidy stop
 service ntopng stop
+service monit stop
 
 ## generate api keys
 couchapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
@@ -326,6 +327,7 @@ curl -s -X PUT --header 'Content-Type: application/json' --header 'Accept: appli
     if [ \"\$tvshowdl\" == 'sickrage' ]
         then
           service sonarr start
+          sleep 5
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"'\$sickapi'\",
@@ -365,6 +367,7 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
 
     else
       service sonarr start
+      sleep 5
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"'\$sickapi'\",
@@ -521,13 +524,14 @@ htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 service mysql stop
 killall -vw mysqld
 mysqld_safe --skip-grant-tables >res 2>&1 &
-sleep 5
+sleep 10
 mysql -e \"UPDATE mysql.user SET authentication_string = PASSWORD('$password') WHERE User = 'root' AND Host = 'localhost';FLUSH PRIVILEGES;\"
 killall -v mysqld
+sleep 5
 service mysql restart
 sed -i 's/^-F \"mysql.*/-F \"mysql;localhost;ntopng;flows;root;$password\"/' /etc/ntopng/ntopng.conf
 sed -i \"s/^.*PSM_DB_PASS.*/define('PSM_DB_PASS', '$password');/\" /usr/share/nginx/html/phpservermonitor/config.php
-sed -i \"s/^.*dbsettings\['pass'\].*/\$dbsettings\['pass'\] = '$password';/\" /var/www/spotweb/dbsettings.inc.php
+sed -i \"s/^.*\['pass'\].*/\\\$dbsettings\['pass'\] = '$password';/\" /var/www/spotweb/dbsettings.inc.php
 
 ## network
 nwadapter=$(ifconfig -a | sed -n 's/^\([^ ]\+\).*/\\1/p' | grep -Fvx -e lo -e dummy0)
