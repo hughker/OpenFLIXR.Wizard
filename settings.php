@@ -628,7 +628,7 @@ crudini --set /usr/share/nginx/html/setup/config.ini extras imdb $imdb
 crudini --set /usr/share/nginx/html/setup/config.ini extras comicvine $comicvine
 
 systemctl --system daemon-reload
-# bash /opt/openflixr/updatewkly.sh
+bash /opt/openflixr/updatewkly.sh
 reboot now");
 fclose($file);
 
