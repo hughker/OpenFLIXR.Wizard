@@ -632,6 +632,6 @@ bash /opt/openflixr/updatewkly.sh
 reboot now");
 fclose($file);
 
-#exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
+exec('sudo bash /usr/share/nginx/html/setup/setup.sh');
 
 ?>
