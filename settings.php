@@ -212,7 +212,6 @@ service htpcmanager stop
 service mylar stop
 service sickrage stop
 service jackett stop
-service sonarr stop
 service mopidy stop
 service ntopng stop
 service monit stop
@@ -257,9 +256,6 @@ crudini --set /opt/headphones/config.ini SABnzbd sab_apikey \$sabapi
 ## mylar
 crudini --set /opt/Mylar/config.ini General api_key \$mylapi
 crudini --set /opt/Mylar/config.ini SABnzbd sab_apikey \$sabapi
-
-## sonarr
-sed -i 's/^  <ApiKey>.*/  <ApiKey>'\$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/config.xml
 
 ## plex
 cp /opt/config/monit/plex /etc/monit/conf.d/
@@ -326,8 +322,6 @@ curl -s -X PUT --header 'Content-Type: application/json' --header 'Accept: appli
 ## tv shows downloader
     if [ \"\$tvshowdl\" == 'sickrage' ]
         then
-          service sonarr start
-          sleep 5
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"'\$sickapi'\",
@@ -366,8 +360,6 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
     sqlite3 database.db \"UPDATE setting SET val='0' where key='sonarr_enable';\"
 
     else
-      service sonarr start
-      sleep 5
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"'\$sickapi'\",
@@ -408,6 +400,10 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
     sqlite3 database.db \"UPDATE setting SET val='on' where key='sonarr_enable';\"
 
   fi
+
+## sonarr
+service sonarr stop
+sed -i 's/^  <ApiKey>.*/  <ApiKey>'\$sonapi'<\/ApiKey>/' /root/.config/NzbDrone/config.xml
 
 ## nzb downloader
     if [ \"\$nzbdl\" == 'sabnzbd' ]
