@@ -215,7 +215,6 @@ service jackett stop
 service sonarr stop
 service mopidy stop
 service ntopng stop
-service mysql stop
 
 ## generate api keys
 couchapi=$(uuidgen | tr -d - | tr -d '' | tr '[:upper:]' '[:lower:]')
@@ -284,7 +283,7 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
 curl -s -X PUT --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"CurrentPassword\": \"'\$oldpassword'\",
   \"NewPassword\": \"'\$password'\"
-}' 'http://localhost:3579/request/api/credentials/0?apikey='\$plexreqapi''
+}' 'http://localhost:3579/request/api/credentials/openflixr?apikey='\$plexreqapi''
 
 ## usenet
     if [ \"\$usenetpassword\" != '' ]
@@ -326,12 +325,7 @@ curl -s -X PUT --header 'Content-Type: application/json' --header 'Accept: appli
 ## tv shows downloader
     if [ \"\$tvshowdl\" == 'sickrage' ]
         then
-          systemctl disable sonarr.service
-          update-rc.d sickrage enable
-          cp /opt/config/monit/sickrage /etc/monit/conf.d/
-          rm /etc/monit/conf.d/sonarr
-          sqlite3 database.db \"UPDATE setting SET val='on' where key='sickrage_enable';\"
-          sqlite3 database.db \"UPDATE setting SET val='0' where key='sonarr_enable';\"
+          service sonarr start
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"'\$sickapi'\",
@@ -362,13 +356,15 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
   \"SubDir\": \"sickrage\"
 }' 'http://localhost:3579/request/api/settings/sickrage?apikey='\$plexreqapi''
 
-        else
-          systemctl enable sonarr.service
-          update-rc.d sickrage disable
-          cp /opt/config/monit/sonarr /etc/monit/conf.d/
-          rm /etc/monit/conf.d/sickrage
-          sqlite3 database.db \"UPDATE setting SET val='0' where key='sickrage_enable';\"
-          sqlite3 database.db \"UPDATE setting SET val='on' where key='sonarr_enable';\"
+    systemctl disable sonarr.service
+    update-rc.d sickrage enable
+    cp /opt/config/monit/sickrage /etc/monit/conf.d/
+    rm /etc/monit/conf.d/sonarr
+    sqlite3 database.db \"UPDATE setting SET val='on' where key='sickrage_enable';\"
+    sqlite3 database.db \"UPDATE setting SET val='0' where key='sonarr_enable';\"
+
+    else
+      service sonarr start
 
 curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   \"ApiKey\": \"'\$sickapi'\",
@@ -401,7 +397,14 @@ curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: appl
   \"SubDir\": \"sonarr\"
 }' 'http://localhost:3579/request/api/settings/sickrage?apikey='\$plexreqapi''
 
-    fi
+    systemctl enable sonarr.service
+    update-rc.d sickrage disable
+    cp /opt/config/monit/sonarr /etc/monit/conf.d/
+    rm /etc/monit/conf.d/sickrage
+    sqlite3 database.db \"UPDATE setting SET val='0' where key='sickrage_enable';\"
+    sqlite3 database.db \"UPDATE setting SET val='on' where key='sonarr_enable';\"
+
+  fi
 
 ## nzb downloader
     if [ \"\$nzbdl\" == 'sabnzbd' ]
@@ -515,11 +518,16 @@ echo openflixr:'$password' | sudo chpasswd
 htpasswd -b /etc/nginx/.htpasswd openflixr '$password'
 
 ## MySQL
-mysqld_safe --skip-grant-tables &
+service mysql stop
+killall -vw mysqld
+mysqld_safe --skip-grant-tables >res 2>&1 &
+sleep 5
 mysql -e \"UPDATE mysql.user SET authentication_string = PASSWORD('$password') WHERE User = 'root' AND Host = 'localhost';FLUSH PRIVILEGES;\"
-sed -i 's/^-F \"mysql*/-F \"mysql;localhost;ntopng;flows;root;$password\"/' /etc/ntopng/ntopng.conf
-sed -i 's/^define('PSM_DB_PASS'*/define('PSM_DB_PASS', '$password');/' /usr/share/nginx/html/phpservermonitor/config.php
-sed -i 's/^\$dbsettings['pass']*/\$dbsettings['pass'] = '$password';/' /var/www/spotweb/dbsettings.inc.php
+killall -v mysqld
+service mysql restart
+sed -i 's/^-F \"mysql.*/-F \"mysql;localhost;ntopng;flows;root;$password\"/' /etc/ntopng/ntopng.conf
+sed -i "s/^.*PSM_DB_PASS.*/define('PSM_DB_PASS', '$password');/" /usr/share/nginx/html/phpservermonitor/config.php
+sed -i "s/^.*dbsettings\['pass'\].*/\$dbsettings\['pass'\] = '$password';/"" /var/www/spotweb/dbsettings.inc.php
 
 ## network
 nwadapter=$(ifconfig -a | sed -n 's/^\([^ ]\+\).*/\\1/p' | grep -Fvx -e lo -e dummy0)
