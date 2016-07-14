@@ -526,8 +526,8 @@ mysql -e \"UPDATE mysql.user SET authentication_string = PASSWORD('$password') W
 killall -v mysqld
 service mysql restart
 sed -i 's/^-F \"mysql.*/-F \"mysql;localhost;ntopng;flows;root;$password\"/' /etc/ntopng/ntopng.conf
-sed -i "s/^.*PSM_DB_PASS.*/define('PSM_DB_PASS', '$password');/" /usr/share/nginx/html/phpservermonitor/config.php
-sed -i "s/^.*dbsettings\['pass'\].*/\$dbsettings\['pass'\] = '$password';/"" /var/www/spotweb/dbsettings.inc.php
+sed -i \"s/^.*PSM_DB_PASS.*/define('PSM_DB_PASS', '$password');/\" /usr/share/nginx/html/phpservermonitor/config.php
+sed -i \"s/^.*dbsettings\['pass'\].*/\$dbsettings\['pass'\] = '$password';/\" /var/www/spotweb/dbsettings.inc.php
 
 ## network
 nwadapter=$(ifconfig -a | sed -n 's/^\([^ ]\+\).*/\\1/p' | grep -Fvx -e lo -e dummy0)
