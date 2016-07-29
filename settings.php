@@ -144,7 +144,6 @@ if(!filter_var($dns, FILTER_VALIDATE_IP)) {
    $ip='';
 }
 
-
 #write setup.sh
 $file = fopen("setup.sh","w");
 fwrite($file,"#!/bin/bash
