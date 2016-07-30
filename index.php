@@ -189,14 +189,6 @@ echo "                                                        <span style=\"colo
 echo "                                                        <input name=\"gateway\" type=\"text\" class=\"form-control\" id=\"gateway\" placeholder=\"E.g. 10.200.10.1\" required>\n";
 echo "                                                    </div>\n";
 echo "                                                </div>\n";
-echo "                                                <div class=\"col-sm-5\">\n";
-echo "                                                    <br>\n";
-echo "                                                    <label>DNS Server</label>\n";
-echo "                                                    <div class=\"input-group\" rel=\"tooltip\" title=\"Google DNS: 8.8.8.8\">\n";
-echo "                                                        <span style=\"color:#808080\" class=\"input-group-addon\"><i class=\"fa fa-sitemap\" aria-hidden=\"true\"></i></span>\n";
-echo "                                                        <input name=\"dns\" type=\"text\" class=\"form-control\" id=\"dns\" placeholder=\"E.g. 8.8.8.8\" required>\n";
-echo "                                                    </div>\n";
-echo "                                                </div>\n";
 echo "                                            </div>\n";
 echo "                                        </div>\n";
 echo "                                        <br>\n";
